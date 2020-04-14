@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <sys/socket.h> 
 #include <netinet/in.h>
@@ -24,25 +25,25 @@ int main(int argc, char *argv[]){
     string teste = "Testando..."; //Mensagem 
 
     //Criando Socket com socket()
-    if ((socket_servidor = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!");
+    if((socket_servidor = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!");
 
     //Definindo parametros do endereco
     socket_s_address.sin_family = AF_INET; //Definindo familia do endereco de internet
     socket_s_address.sin_addr.s_addr = htonl(INADDR_ANY); //Habilitando qualquer interface de conexao
-    socket_s_address.sin_port = htons(PORTA);
+    socket_s_address.sin_port = htons(PORTA); //Definindo porta
 
     //Reservando porta para o socket usando o bind()
     if(bind(socket_servidor, reinterpret_cast <struct sockaddr *> (&socket_s_address), sizeof(socket_s_address)) < 0) erro("Reserva de endereco falhou!");
    
     //Habilita o socket para receber conexoes
-    if (listen(socket_servidor, TAM_FILA_REQUERENTES) < 0) erro("Habilitar  de conexoes falhou!");
+    if(listen(socket_servidor, TAM_FILA_REQUERENTES) < 0) erro("Habilitar  de conexoes falhou!");
 	
 	//Tamanho da struct
 	socklen_t tam_cliente_address = sizeof(socket_c_address);
-	//Loop de leitura
-    while(1){
-        if ((socket_cliente = accept(socket_servidor,(struct sockaddr *)&socket_c_address,&tam_cliente_address))<0) erro("Falha ao aceitar conexoes!");
-		//
-	}
-    return EXIT_SUCCESS; 
+	
+	//Esperando conexao com cliente
+    while(1) if((socket_cliente = accept(socket_servidor, reinterpret_cast <struct sockaddr *> (&socket_c_address), &tam_cliente_address))<0) erro("Falha ao aceitar conexoes!");
+    
+	//Fim do programa
+	return EXIT_SUCCESS; 
 }
