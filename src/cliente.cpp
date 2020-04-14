@@ -1,14 +1,16 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
-#include <string>
+#include <string.h>
 #include <sys/socket.h> 
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 
 using namespace std;
 
 //DEFININDO CONSTANTES
-#define PORTA 8080
+#define PORTA 31010
 
 
 //Funcao que lanca uma mensagem de erro e termina o programa
@@ -23,15 +25,21 @@ int main(int argc, char *argv[]){
     char buffer[4096]; //Mensagem 
     int socket_cliente; //Declarando descritor do socket do cliente
     struct sockaddr_in socket_c_address; //Declarando endereco do socket
+    
+    char serv_addr[100]; //Endereço do servidor
+    printf("Digite o endereço do servidor:");
+    scanf("%[^\n]%*c", serv_addr);
 
-    scanf("%s\n",buffer);
+    scanf("%[^\n]%*c", buffer);
 
     //Criando Socket com a socket()
 	if((socket_cliente = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
 	
     //Definindo parametros do endereco
     socket_c_address.sin_family = AF_INET; //Definindo familia do endereco de internet
-    socket_c_address.sin_addr.s_addr = htonl(INADDR_ANY); //Habilitando qualquer interface de conexao
+    //socket_c_address.sin_addr.s_addr = htonl(INADDR_ANY); //Habilitando qualquer interface de conexao
+    //socket_c_address.sin_addr.s_addr = inet_addr("201.13.159.19");
+    socket_c_address.sin_addr.s_addr = inet_addr(serv_addr);
     socket_c_address.sin_port = htons(PORTA); //Definindo porta
 	
 	//Realiza conexao com o servidor
@@ -40,6 +48,8 @@ int main(int argc, char *argv[]){
 	//Manda mensagem para o servidor
 	send(socket_cliente, buffer, strlen(buffer), 0);
 	
+    close(socket_cliente);
+
 	//Fim do programa
 	return EXIT_SUCCESS;
 }
