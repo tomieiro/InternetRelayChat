@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <sys/socket.h> 
 #include <netinet/in.h>
  
@@ -18,7 +18,8 @@ void erro(string erro){
 }
 
 
-int main(int argc, char const *argv[]){ 
+int main(int argc, char const *argv[]){
+	cout << "Ok";
     int socket_servidor, socket_cliente; //Declarando descritor dos sockets de servidor e cliente
     struct sockaddr_in socket_s_address, socket_c_address; //Declarando enderecos dos sockets(sao structs predefinidas la no socket.h)
     string buffer; //Buffer do chat
@@ -40,11 +41,12 @@ int main(int argc, char const *argv[]){
 	
 	//Tamanho da struct
 	socklen_t tam_cliente_address = sizeof(socket_c_address);
-    
+    string aux;
 	//Loop de leitura
     while(1){
         if ((socket_cliente = accept(socket_servidor,(struct sockaddr *)&socket_c_address,&tam_cliente_address))<0) erro("Falha ao aceitar conexoes!");
-    }
+		cout << "Ok";
+	}
     return EXIT_SUCCESS; 
 }
 
