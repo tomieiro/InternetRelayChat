@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
 	//Loop de leitura
     while(1){
         if ((socket_cliente = accept(socket_servidor,(struct sockaddr *)&socket_c_address,&tam_cliente_address))<0) erro("Falha ao aceitar conexoes!");
+		//
 	}
     return EXIT_SUCCESS; 
 }
