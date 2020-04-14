@@ -1,9 +1,13 @@
-all:	irc.o
+all:
 	g++	-o	bin/irc.o	src/irc.cpp
 
-test:
+run_servidor:
+	g++	src/servidor.cpp	-o	bin/servidor
+	./bin/servidor
+
+run_cliente:
 	g++	src/cliente.cpp	-o	bin/cliente
-	g++	-Wall	src/servidor.cpp	-o	bin/servidor
+	./bin/cliente
 
 clean:
 	rm bin/*

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <string>
 #include <sys/socket.h> 
 #include <netinet/in.h>
@@ -19,10 +20,12 @@ void erro(string erro){
 
 
 int main(int argc, char *argv[]){
-    string teste = "Angra"; //Mensagem 
+    char buffer[4096]; //Mensagem 
     int socket_cliente; //Declarando descritor do socket do cliente
     struct sockaddr_in socket_c_address; //Declarando endereco do socket
-	
+
+    scanf("%s\n",buffer);
+
     //Criando Socket com a socket()
 	if((socket_cliente = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
 	
@@ -35,7 +38,7 @@ int main(int argc, char *argv[]){
 	if(connect(socket_cliente, reinterpret_cast <struct sockaddr *> (&socket_c_address), sizeof(socket_c_address)) < 0) erro("Criacao de conexao falhou!\n");	
 	
 	//Manda mensagem para o servidor
-	send(socket_cliente, teste.c_str(), teste.length(), 0);
+	send(socket_cliente, buffer, strlen(buffer), 0);
 	
 	//Fim do programa
 	return EXIT_SUCCESS;
