@@ -3,7 +3,7 @@ all:	irc.o
 
 test:
 	#g++	src/cliente.cpp	-o	bin/cliente
-	g++	-Wall	src/server.cpp	-o	bin/server
+	g++	-Wall	src/servidor.cpp	-o	bin/servidor
 
 clean:
 	rm bin/*
