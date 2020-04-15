@@ -26,6 +26,13 @@ void conexao::finaliza_conexao(){
 //METODOS DA CLASSE FILHA SERVIDOR
 
 
+//Construtor
+conexao_servidor::conexao_servidor(){
+        for(int i=0; i<MAX_CLIENTES; i++){
+            this->tam_endereco_cliente[i] = 0;
+        }
+    }
+
 //Metodo que cria uma conexao do servidor para terceiros
 void conexao_servidor::cria_conexao(){
     //Criando Self_Socket com a socket()
