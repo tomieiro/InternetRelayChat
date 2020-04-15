@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     Conexao.cria_conexao(ip);
 
     //Verifica mensagens maiores que 4096 caracteres e as separam
-    do{
+    /*do{
         strncpy(mensagem, buffer.c_str(), 4096);
         if(buffer.length() > 4096){
             buffer = buffer.substr(4095, buffer.length()-4095);
