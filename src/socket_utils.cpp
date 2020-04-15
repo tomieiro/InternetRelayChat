@@ -1,6 +1,6 @@
 #include "socket_utils.h"
 
-int kill_descriptor;
+int kill_descriptor[2];
 
 //METODOS DA CLASSE MAE CONEXAO
 
@@ -52,11 +52,12 @@ conexao_servidor::conexao_servidor(){
             this->tam_endereco_cliente[i] = 0;
         }
         this->quantidade_clientes = 0;
-    }
+}
 
 //Funcao para matar corretamente o programa fechando descritor da socket
 void die_corretly(int signal){
-    close(kill_descriptor);
+    close(kill_descriptor[0]);
+    close(kill_descriptor[1]);
     exit(EXIT_SUCCESS);
 }
 
@@ -66,7 +67,8 @@ void conexao_servidor::cria_conexao(){
 	if((this->self_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
 
     //Tratando a interrupcao do processo pelo sinal SIGINT (Crtl + C)
-    kill_descriptor = this->self_socket;
+    kill_descriptor[0] = this->self_socket;
+    kill_descriptor[1] = this->socket_cliente_atual;
     signal(SIGINT,die_corretly);
 
     //Definindo parametros do endereco
@@ -115,11 +117,21 @@ void conexao_servidor::recebe_envios(){
 //METODOS DA CLASSE FILHA CLIENTE
 
 
+//Funcao para matar corretamente o programa fechando descritor da socket
+void die_corretly_cliente(int signal){
+    close(kill_descriptor[0]);
+    exit(EXIT_SUCCESS);
+}
+
 //Metodo que cria uma conexao de um cliente com o servidor
 //args: (char*) Endereco de ip do servidor
 void conexao_cliente::cria_conexao(char ip[20]){
     //Setando ip
     this->ip = ip;
+
+    //Tratando a interrupcao do processo pelo sinal SIGINT (Crtl + C)
+    kill_descriptor[0] = this->self_socket;
+    signal(SIGINT,die_corretly_cliente);
 
     //Criando Socket com a socket()
 	if((this->self_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
