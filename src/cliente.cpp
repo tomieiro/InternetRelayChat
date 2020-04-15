@@ -12,9 +12,12 @@ int main(int argc, char *argv[]){
     char mensagem[4096]; //Mensagem
     char ip[20]; //Endereco de IP do servidor
 
-    printf("Digite o endereço do servidor: ");
+    printf("Digite o endereço do servidor (Enter para local 0.0.0.0): ");
     scanf("%[^\n]%*c", ip);
-		
+    if(strcmp(ip, "")) strcpy(ip, "0.0.0.0");
+	
+    getchar();
+
     printf("Digite uma mensagem: ");
     getline(cin, buffer);
     

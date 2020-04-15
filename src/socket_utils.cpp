@@ -17,7 +17,6 @@ void conexao::erro(const char erro[100]){
 }
 
 void conexao::set_mensagem(char b[4096]){
-    printf("STRING: %s\n",b);
     strcpy(this->buffer, b);
 }
 
@@ -34,7 +33,9 @@ int conexao::envia_mensagem(){
 
 //Metodo que limpa o buffer
 void conexao::limpa_mensagem(){
-    bzero(this->buffer, 4096);
+    for(int i=0; i<4096; i++){
+        this->buffer[i] = 0;
+    }
 }
 
 //Metodo que finaliza uma conexao
