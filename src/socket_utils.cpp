@@ -1,5 +1,6 @@
 #include "socket_utils.h"
 
+int kill_descriptor[2];
 
 //METODOS DA CLASSE MAE CONEXAO
 
@@ -16,7 +17,6 @@ void conexao::erro(const char erro[100]){
 }
 
 void conexao::set_mensagem(char b[4096]){
-    printf("STRING: %s\n",b);
     strcpy(this->buffer, b);
 }
 
@@ -33,7 +33,9 @@ int conexao::envia_mensagem(){
 
 //Metodo que limpa o buffer
 void conexao::limpa_mensagem(){
-    bzero(this->buffer, 4096);
+    for(int i=0; i<4096; i++){
+        this->buffer[i] = 0;
+    }
 }
 
 //Metodo que finaliza uma conexao
@@ -49,13 +51,26 @@ conexao_servidor::conexao_servidor(){
         for(int i=0; i<MAX_CLIENTES; i++){
             this->tam_endereco_cliente[i] = 0;
         }
-    }
+        this->quantidade_clientes = 0;
+}
+
+//Funcao para matar corretamente o programa fechando descritor da socket
+void die_corretly(int signal){
+    close(kill_descriptor[0]);
+    close(kill_descriptor[1]);
+    exit(EXIT_SUCCESS);
+}
 
 //Metodo que cria uma conexao do servidor para terceiros
 void conexao_servidor::cria_conexao(){
     //Criando Self_Socket com a socket()
 	if((this->self_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
-    
+
+    //Tratando a interrupcao do processo pelo sinal SIGINT (Crtl + C)
+    kill_descriptor[0] = this->self_socket;
+    kill_descriptor[1] = this->socket_cliente_atual;
+    signal(SIGINT,die_corretly);
+
     //Definindo parametros do endereco
     this->endereco_socket.sin_family = AF_INET; //Definindo familia do endereco de internet
     this->endereco_socket.sin_addr.s_addr = htonl(INADDR_ANY); //Subindo no endereco ip
@@ -70,33 +85,53 @@ void conexao_servidor::cria_conexao(){
 
 void conexao_servidor::recebe_envios(){
     //Endereco e seu tamanho declarados
-    //static struct sockaddr_in *aux_addr;
-    //static socklen_t aux = sizeof(this->endereco_sockets_clientes);
+    static struct sockaddr_in aux_addr;
+    static socklen_t aux = sizeof(aux_addr);
+    
     //Aceita conexoes
-    if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_sockets_clientes[0])/*aux_addr*/, &this->tam_endereco_cliente[0]/*aux*/))<0) erro("Falha ao aceitar conexoes!\n");
+    if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(aux_addr), &aux))<0) erro("Falha ao aceitar conexoes!\n");
     recv(this->socket_cliente_atual, this->buffer, 4096, 0);
-    /*
-    if(aux_addr->sa_data != 0){
-        for(int k=0; k<MAX_CLIENTES; k++){
-            if(this->endereco_sockets_clientes[k].sin_addr.s_addr == aux_t) 
-        }
-        if(this->quantidade_clientes < MAX_CLIENTES){
-                
+    
+    //Rodando apenas quando o evento accept ocorre
+    if(aux != 0){
+        if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
+
+        //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
+        static bool verificacao = true;
+        for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
+            if(this->endereco_sockets_clientes[k].sin_addr.s_addr == aux_addr.sin_addr.s_addr){
+                verificacao = false;
             }
-        aux_addr->sa_data = 0;
+        }
+        //Se verdadeiro que e sua primeira conexao, entra na lista
+        if(verificacao){
+            this->quantidade_clientes++;
+            this->endereco_sockets_clientes[this->quantidade_clientes] = aux_addr;
+        }
+        verificacao = true;
+        aux = 0;
     }
-    */
 }
 
 
 //METODOS DA CLASSE FILHA CLIENTE
 
 
+//Funcao para matar corretamente o programa fechando descritor da socket
+void die_corretly_cliente(int signal){
+    close(kill_descriptor[0]);
+    exit(EXIT_SUCCESS);
+}
+
 //Metodo que cria uma conexao de um cliente com o servidor
 //args: (char*) Endereco de ip do servidor
 void conexao_cliente::cria_conexao(char ip[20]){
     //Setando ip
     this->ip = ip;
+
+    //Tratando a interrupcao do processo pelo sinal SIGINT (Crtl + C)
+    kill_descriptor[0] = this->self_socket;
+    signal(SIGINT,die_corretly_cliente);
 
     //Criando Socket com a socket()
 	if((this->self_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
