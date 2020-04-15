@@ -7,7 +7,7 @@ run_servidor:
 
 run_cliente:
 	g++	src/cliente.cpp	-o	bin/cliente
-	./bin/cliente
+	./bin/cliente < 1.in
 
 clean:
 	rm bin/*

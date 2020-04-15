@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 	
 	//Esperando conexao com cliente
     while(1){
-		if((socket_cliente = accept(socket_servidor, reinterpret_cast <struct sockaddr *> (&socket_c_address), &tam_cliente_address))<0) erro("Falha ao aceitar conexoes!\n");
+		if((socket_cliente = accept(socket_servidor, reinterpret_cast <struct sockaddr *> (&socket_c_address), &tam_cliente_address)) < 0) erro("Falha ao aceitar conexoes!\n");
     	if((tam_mensagem = recv(socket_cliente, buffer, 4096, 0)) < 0) erro("Falha ao receber mensagem!\n");
         printf("MENSAGEM: %s\n",buffer);
         send(socket_cliente, buffer, strlen(buffer), 0);
