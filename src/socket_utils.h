@@ -34,11 +34,7 @@ class conexao_servidor : public conexao {
     int socket_cliente_atual;
     int quantidade_clientes;
     public:
-    conexao_servidor(){
-        for(int i=0; i<MAX_CLIENTES; i++){
-            this->tam_endereco_cliente[i] = 0;
-        }
-    }
+    conexao_servidor();
     void cria_conexao();
     void recebe_envios(char*);
 };
