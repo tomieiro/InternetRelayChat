@@ -12,36 +12,41 @@ int main(int argc, char *argv[]){
     char mensagem[4096]; //Mensagem
     char ip[20]; //Endereco de IP do servidor
 
-    printf("Digite o endereço do servidor: ");
+    printf("Digite o endereço do servidor (Enter para local 0.0.0.0): ");
     scanf("%[^\n]%*c", ip);
-		
-    printf("Digite uma mensagem: ");
-    getline(cin, buffer);
+    if(strcmp(ip, "")) strcpy(ip, "0.0.0.0");
+	
+    getchar();
     
     conexao_cliente Conexao;
     Conexao.cria_conexao(ip);
 
     //Verifica mensagens maiores que 4096 caracteres e as separam
-    do{
-        strncpy(mensagem, buffer.c_str(), 4096);
-        if(buffer.length() > 4096){
-            buffer = buffer.substr(4095, buffer.length()-4095);
-            mensagem[4095] = '\0';
-            //Manda mensagem para o servidor
-            Conexao.set_mensagem(mensagem);
-            Conexao.envia_mensagem();
-        }else{
-            mensagem[buffer.length()-1] = '\0';
-            //Manda mensagem para o servidor
-            Conexao.set_mensagem(mensagem);
-            Conexao.envia_mensagem();
-            break;
-        }
-        Conexao.finaliza_conexao();
-        Conexao.restart_conexao();
-        
-    }while(1);
-    
+    while(1){
+        printf("Digite uma mensagem: ");
+        getline(cin, buffer);
+        if(!strcmp(buffer.c_str(), "/quit")) break;
+        do{
+            strncpy(mensagem, buffer.c_str(), 4096);
+            if(buffer.length() > 4096){
+                buffer = buffer.substr(4095, buffer.length()-4095);
+                mensagem[4095] = '\0';
+                //Manda mensagem para o servidor
+                Conexao.set_mensagem(mensagem);
+                Conexao.envia_mensagem();
+                Conexao.finaliza_conexao();
+                Conexao.restart_conexao();
+            }else{
+                mensagem[buffer.length()] = '\0';
+                //Manda mensagem para o servidor
+                Conexao.set_mensagem(mensagem);
+                Conexao.envia_mensagem();
+                Conexao.finaliza_conexao();
+                Conexao.restart_conexao();
+                break;
+            }
+        }while(1);
+    }
     Conexao.finaliza_conexao();
 
 	//Fim do programa
