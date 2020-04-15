@@ -2,11 +2,11 @@ all:
 	g++	-o	bin/irc.o	src/irc.cpp
 
 run_servidor:
-	g++	src/servidor.cpp	-o	bin/servidor
+	g++	-o	bin/servidor	src/socket_utils.cpp	src/servidor.cpp	
 	./bin/servidor
 
 run_cliente:
-	g++	src/cliente.cpp	-o	bin/cliente
+	g++	-o	bin/cliente	src/socket_utils.cpp	src/cliente.cpp
 	./bin/cliente < 1.in
 
 clean:
