@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -8,7 +9,7 @@
 using namespace std;
 
 //DEFININDO CONSTANTES
-#define PORTA 8080
+#define PORTA 31010
 #define TAM_FILA_REQUERENTES 3
 
 
