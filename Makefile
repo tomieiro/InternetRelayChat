@@ -7,7 +7,7 @@ run_servidor:
 
 run_cliente:
 	g++	-o	bin/cliente	src/socket_utils.cpp	src/cliente.cpp
-	./bin/cliente < 1.in
+	./bin/cliente
 
 clean:
 	rm bin/*
