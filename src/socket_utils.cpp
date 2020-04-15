@@ -3,6 +3,10 @@
 
 //METODOS DA CLASSE MAE CONEXAO
 
+//Construtor
+conexao::conexao(){
+    bzero(this->buffer, 4096);
+}
 
 //Metodo que lanca um erro e termina o programa
 //args: (const char*) Frase de erro
@@ -11,11 +15,25 @@ void conexao::erro(const char erro[100]){
         exit(EXIT_FAILURE);
 }
 
+void conexao::set_mensagem(char b[4096]){
+    printf("STRING: %s\n",b);
+    strcpy(this->buffer, b);
+}
+
+char *conexao::get_mensagem(){
+    return this->buffer;
+}
+
 //Metodo que envia uma mensagem quando ja setada uma conexao
 //args: (char*) Mensagem a ser enviada
 //return: (int) Quantidade de caracteres enviados
-int conexao::envia_mensagem(char mensagem[4096]){
-    return send(this->self_socket, mensagem, strlen(mensagem), MSG_OOB);
+int conexao::envia_mensagem(){
+    return send(this->self_socket, this->buffer, strlen(this->buffer), 0);
+}
+
+//Metodo que limpa o buffer
+void conexao::limpa_mensagem(){
+    bzero(this->buffer, 4096);
 }
 
 //Metodo que finaliza uma conexao
@@ -50,13 +68,13 @@ void conexao_servidor::cria_conexao(){
     if(listen(this->self_socket, this->quantidade_clientes) < 0) erro("Habilitar  de conexoes falhou!\n");
 }
 
-void conexao_servidor::recebe_envios(char *buffer){
+void conexao_servidor::recebe_envios(){
     //Endereco e seu tamanho declarados
     //static struct sockaddr_in *aux_addr;
     //static socklen_t aux = sizeof(this->endereco_sockets_clientes);
     //Aceita conexoes
     if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_sockets_clientes[0])/*aux_addr*/, &this->tam_endereco_cliente[0]/*aux*/))<0) erro("Falha ao aceitar conexoes!\n");
-    recv(this->socket_cliente_atual, buffer, 4096, MSG_OOB);
+    recv(this->socket_cliente_atual, this->buffer, 4096, 0);
     /*
     if(aux_addr->sa_data != 0){
         for(int k=0; k<MAX_CLIENTES; k++){

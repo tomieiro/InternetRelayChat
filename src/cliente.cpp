@@ -28,11 +28,13 @@ int main(int argc, char *argv[]){
             buffer = buffer.substr(4095, buffer.length()-4095);
             mensagem[4095] = '\0';
             //Manda mensagem para o servidor
-            Conexao.envia_mensagem(mensagem);
+            Conexao.set_mensagem(mensagem);
+            Conexao.envia_mensagem();
         }else{
             mensagem[buffer.length()-1] = '\0';
             //Manda mensagem para o servidor
-            Conexao.envia_mensagem(mensagem);
+            Conexao.set_mensagem(mensagem);
+            Conexao.envia_mensagem();
             break;
         }
         Conexao.finaliza_conexao();
