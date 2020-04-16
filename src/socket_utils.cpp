@@ -1,5 +1,5 @@
 #include "socket_utils.h"
-#include <signal.h>
+
 
 int kill_descriptor[2];
 
@@ -25,11 +25,20 @@ char *conexao::get_mensagem(){
     return this->buffer;
 }
 
+
+void *write_sock(void *c){
+    write(((conexao*)c)->self_socket, ((conexao*)c)->buffer, sizeof(((conexao*)c)->buffer));
+    return NULL;
+}
+
 //Metodo que envia uma mensagem quando ja setada uma conexao
 //args: (char*) Mensagem a ser enviada
 //return: (int) Quantidade de caracteres enviados
 int conexao::envia_mensagem(){
-    return send(this->self_socket, this->buffer, strlen(this->buffer), 0);
+    pthread_t aux;
+    pthread_create(&aux, NULL, write_sock, this);
+    pthread_join(aux, NULL); 
+    return 0;
 }
 
 //Metodo que limpa o buffer
@@ -49,9 +58,6 @@ void conexao::finaliza_conexao(){
 
 //Construtor
 conexao_servidor::conexao_servidor(){
-        for(int i=0; i<MAX_CLIENTES; i++){
-            this->tam_endereco_cliente[i] = 0;
-        }
         this->quantidade_clientes = 0;
 }
 
@@ -84,33 +90,46 @@ void conexao_servidor::cria_conexao(){
     if(listen(this->self_socket, this->quantidade_clientes) < 0) erro("Habilitar  de conexoes falhou!\n");
 }
 
+
+void *read_sock(void *c){
+    socklen_t aux = sizeof(((conexao_servidor*)c)->endereco_socket);
+    if((((conexao_servidor*)c)->socket_cliente_atual = accept(((conexao_servidor*)c)->self_socket, (struct sockaddr*)&(((conexao_servidor*)c)->endereco_socket), &aux))<0) ((conexao_servidor*)c)->erro("Falha ao aceitar conexoes!\n");
+    read(((conexao_servidor*)c)->socket_cliente_atual,((conexao_servidor*)c)->buffer, sizeof(((conexao_servidor*)c)->buffer));
+}
+
+
 void conexao_servidor::recebe_envios(){
-    //Endereco e seu tamanho declarados
-    static struct sockaddr_in aux_addr;
-    static socklen_t aux = sizeof(aux_addr);
-    
     //Aceita conexoes
-    if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(aux_addr), &aux))<0) erro("Falha ao aceitar conexoes!\n");
-    recv(this->socket_cliente_atual, this->buffer, 4096, 0);
+    
+    pthread_t aux;
+    pthread_create(&aux, NULL, read_sock, this);
+    pthread_join(aux, NULL); 
     
     //Rodando apenas quando o evento accept ocorre
-    if(aux != 0){
+    if(this->buffer[0] != 0){
         if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
 
         //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
         static bool verificacao = true;
         for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
-            if(this->endereco_sockets_clientes[k].sin_addr.s_addr == aux_addr.sin_addr.s_addr){
+            if(this->sockets_clientes[k] == socket_cliente_atual){
                 verificacao = false;
             }
         }
         //Se verdadeiro que e sua primeira conexao, entra na lista
         if(verificacao){
             this->quantidade_clientes++;
-            this->endereco_sockets_clientes[this->quantidade_clientes] = aux_addr;
+            this->sockets_clientes[this->quantidade_clientes] = socket_cliente_atual;
         }
         verificacao = true;
-        aux = 0;
+    }
+}
+
+
+void conexao_servidor::envia_para_clientes(){
+    
+    for(int i=0; i<this->quantidade_clientes; i++){
+        write(this->sockets_clientes[i], this->buffer, sizeof(this->buffer));  
     }
 }
 
@@ -144,6 +163,11 @@ void conexao_cliente::cria_conexao(char ip[20]){
     
     //Realiza conexao com o servidor
     if(connect(this->self_socket, (struct sockaddr *)&(this->endereco_socket), sizeof(this->endereco_socket)) < 0) erro("Criacao de conexao falhou!\n");	
+}
+
+
+void conexao_cliente::recebe_mensagens(){
+    read(this->self_socket, this->buffer, sizeof(this->buffer));
 }
 
 

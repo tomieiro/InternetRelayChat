@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <signal.h>
+#include <pthread.h>
 
 
 //DEFININDO CONSTANTES
@@ -31,27 +33,29 @@ class conexao{
     void limpa_mensagem();
     void finaliza_conexao();
     char *get_mensagem();
-    
 };
 
 //Classe servidor
 class conexao_servidor : public conexao {
-    struct sockaddr_in endereco_sockets_clientes[MAX_CLIENTES];
-    socklen_t tam_endereco_cliente[MAX_CLIENTES];
-    int socket_cliente_atual;
-    int quantidade_clientes;
+    
     public:
+    int socket_cliente_atual;
+    int sockets_clientes[MAX_CLIENTES];
+    int quantidade_clientes;
     conexao_servidor();
     void cria_conexao();
     void recebe_envios();
+    void envia_para_clientes();
 };
 
 //Classe cliente
 class conexao_cliente : public conexao {
-    char *ip;
+    
     public:
+    char *ip;
     void cria_conexao(char*);
     void restart_conexao();
+    void recebe_mensagens();
 };
 
 #endif
