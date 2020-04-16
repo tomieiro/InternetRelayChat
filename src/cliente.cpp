@@ -10,11 +10,17 @@ int main(int argc, char *argv[]){
 
     string buffer; //Buffer
     char mensagem[4096]; //Mensagem
+    string nome_usuario; //Nome do usuário
     char ip[20]; //Endereco de IP do servidor
+    int tamanho_real_mensagem;
+
+    printf("Escreva um nome para o usuário: ");
+    getline(cin, nome_usuario);
+    tamanho_real_mensagem = 4096 - nome_usuario.length(); 
+    strncpy(mensagem, nome_usuario.c_str(), nome_usuario.length()); 
 
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
     scanf("%[^\n]s", ip);
-    //if(strcmp(ip, "\n")) strcpy(ip, "0.0.0.0");
 	
     getchar();
     
@@ -25,11 +31,12 @@ int main(int argc, char *argv[]){
     while(1){
         printf("Digite uma mensagem: ");
         getline(cin, buffer);
+              
         if(!strcmp(buffer.c_str(), "/quit")) break;
         do{
-            strncpy(mensagem, buffer.c_str(), 4096);
-            if(buffer.length() > 4096){
-                buffer = buffer.substr(4095, buffer.length()-4095);
+            strncpy(mensagem+nome_usuario.length(), buffer.c_str(), tamanho_real_mensagem);
+            if(buffer.length() > tamanho_real_mensagem){
+                buffer = buffer.substr(tamanho_real_mensagem-1, buffer.length()-(tamanho_real_mensagem-1));
                 mensagem[4095] = '\0';
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
@@ -37,7 +44,7 @@ int main(int argc, char *argv[]){
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
             }else{
-                mensagem[buffer.length()] = '\0';
+                mensagem[buffer.length()+nome_usuario.length()] = '\0';
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
                 Conexao.envia_mensagem();
