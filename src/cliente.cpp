@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     Conexao.cria_conexao(ip);
 
     //Verifica mensagens maiores que 4096 caracteres e as separam
-    while(1){
+    while(true){
         printf("Digite uma mensagem: ");
         getline(cin, buffer);
         if(!strcmp(buffer.c_str(), "/quit")) break;
