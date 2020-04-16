@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 	//Esperando conexao com cliente
     while(true){
         Conexao.recebe_envios();
-        printf("MENSAGEM: %s\n",Conexao.get_mensagem());
+        printf("%s\n",Conexao.get_mensagem());
         if(buffer[0] != 0) Conexao.limpa_mensagem();
 	}
 }

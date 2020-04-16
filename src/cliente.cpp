@@ -8,40 +8,50 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    string buffer; //Buffer
+    string buffer, user;//Buffer
     char mensagem[4096]; //Mensagem
     char ip[20]; //Endereco de IP do servidor
 
-    printf("Digite o endereço do servidor: ");
-    scanf("%[^\n]%*c", ip);
-		
-    printf("Digite uma mensagem: ");
-    getline(cin, buffer);
+    printf("Digite seu nome de usuário?\n");
+    getline(cin, user);
+    user = user + ": ";
+
+    printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
+    scanf("%[^\n]s", ip);
+    //if(strcmp(ip, "\n")) strcpy(ip, "0.0.0.0");
+	
+    getchar();
     
     conexao_cliente Conexao;
     Conexao.cria_conexao(ip);
 
     //Verifica mensagens maiores que 4096 caracteres e as separam
-    do{
-        strncpy(mensagem, buffer.c_str(), 4096);
-        if(buffer.length() > 4096){
-            buffer = buffer.substr(4095, buffer.length()-4095);
-            mensagem[4095] = '\0';
-            //Manda mensagem para o servidor
-            Conexao.set_mensagem(mensagem);
-            Conexao.envia_mensagem();
-        }else{
-            mensagem[buffer.length()-1] = '\0';
-            //Manda mensagem para o servidor
-            Conexao.set_mensagem(mensagem);
-            Conexao.envia_mensagem();
-            break;
-        }
-        Conexao.finaliza_conexao();
-        Conexao.restart_conexao();
-        
-    }while(1);
-    
+    while(1){
+        printf("Digite uma mensagem: ");
+        getline(cin, buffer);
+        if(!strcmp(buffer.c_str(), "/quit")) break;
+        do{
+            buffer = user + buffer;
+            strncpy(mensagem, buffer.c_str(), 4096);
+            if(buffer.length() > 4096){
+                buffer = buffer.substr(4095, buffer.length()-4095);
+                mensagem[4095] = '\0';
+                //Manda mensagem para o servidor
+                Conexao.set_mensagem(mensagem);
+                Conexao.envia_mensagem();
+                Conexao.finaliza_conexao();
+                Conexao.restart_conexao();
+            }else{
+                mensagem[buffer.length()] = '\0';
+                //Manda mensagem para o servidor
+                Conexao.set_mensagem(mensagem);
+                Conexao.envia_mensagem();
+                Conexao.finaliza_conexao();
+                Conexao.restart_conexao();
+                break;
+            }
+        }while(1);
+    }
     Conexao.finaliza_conexao();
 
 	//Fim do programa
