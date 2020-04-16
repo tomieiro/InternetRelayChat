@@ -11,6 +11,7 @@ int main(int argc, char *argv[]){
 	//Esperando conexao com cliente
     while(true){
         Conexao.recebe_envios();
+        printf("\n%s\n",Conexao.get_mensagem());
         if(Conexao.get_mensagem()[0] != 0){
             //Conexao.envia_para_clientes();
             Conexao.limpa_mensagem();

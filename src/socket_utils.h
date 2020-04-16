@@ -11,7 +11,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
-#include <pthread.h>
 
 
 //DEFININDO CONSTANTES
@@ -29,7 +28,6 @@ class conexao{
     void erro(const char*);
     void cria_conexao();
     void set_mensagem(char*);
-    int envia_mensagem();
     void limpa_mensagem();
     void finaliza_conexao();
     char *get_mensagem();
@@ -37,11 +35,10 @@ class conexao{
 
 //Classe servidor
 class conexao_servidor : public conexao {
-    
-    public:
     int socket_cliente_atual;
     int sockets_clientes[MAX_CLIENTES];
     int quantidade_clientes;
+    public:
     conexao_servidor();
     void cria_conexao();
     void recebe_envios();
@@ -50,12 +47,12 @@ class conexao_servidor : public conexao {
 
 //Classe cliente
 class conexao_cliente : public conexao {
-    
-    public:
     char *ip;
+    public:
     void cria_conexao(char*);
+    int envia_mensagem();
+    int recebe_mensagens();
     void restart_conexao();
-    void recebe_mensagens();
 };
 
 #endif

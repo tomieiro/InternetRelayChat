@@ -16,6 +16,7 @@ int main(int argc, char *argv[]){
 
     printf("Escreva um nome para o usuário: ");
     getline(cin, nome_usuario);
+    nome_usuario = nome_usuario + " : ";
     tamanho_real_mensagem = 4096 - nome_usuario.length(); 
     strncpy(mensagem, nome_usuario.c_str(), nome_usuario.length()); 
 
