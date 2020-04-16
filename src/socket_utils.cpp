@@ -1,5 +1,5 @@
 #include "socket_utils.h"
-
+#include <signal.h>
 
 int kill_descriptor[2];
 
@@ -23,22 +23,6 @@ void conexao::set_mensagem(char b[4096]){
 
 char *conexao::get_mensagem(){
     return this->buffer;
-}
-
-
-void *write_sock(void *c){
-    write(((conexao*)c)->self_socket, ((conexao*)c)->buffer, sizeof(((conexao*)c)->buffer));
-    return NULL;
-}
-
-//Metodo que envia uma mensagem quando ja setada uma conexao
-//args: (char*) Mensagem a ser enviada
-//return: (int) Quantidade de caracteres enviados
-int conexao::envia_mensagem(){
-    pthread_t aux;
-    pthread_create(&aux, NULL, write_sock, this);
-    pthread_join(aux, NULL); 
-    return 0;
 }
 
 //Metodo que limpa o buffer
@@ -90,21 +74,13 @@ void conexao_servidor::cria_conexao(){
     if(listen(this->self_socket, this->quantidade_clientes) < 0) erro("Habilitar  de conexoes falhou!\n");
 }
 
-
-void *read_sock(void *c){
-    socklen_t aux = sizeof(((conexao_servidor*)c)->endereco_socket);
-    if((((conexao_servidor*)c)->socket_cliente_atual = accept(((conexao_servidor*)c)->self_socket, (struct sockaddr*)&(((conexao_servidor*)c)->endereco_socket), &aux))<0) ((conexao_servidor*)c)->erro("Falha ao aceitar conexoes!\n");
-    read(((conexao_servidor*)c)->socket_cliente_atual,((conexao_servidor*)c)->buffer, sizeof(((conexao_servidor*)c)->buffer));
-}
-
-
 void conexao_servidor::recebe_envios(){
     //Aceita conexoes
+    socklen_t aux = sizeof(this->endereco_socket);
+    if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_socket), &aux))<0) erro("Falha ao aceitar conexoes!\n");
     
-    pthread_t aux;
-    pthread_create(&aux, NULL, read_sock, this);
-    pthread_join(aux, NULL); 
-    
+    recv(socket_cliente_atual, this->buffer, sizeof(this->buffer), 0);
+
     //Rodando apenas quando o evento accept ocorre
     if(this->buffer[0] != 0){
         if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
@@ -127,11 +103,12 @@ void conexao_servidor::recebe_envios(){
 
 
 void conexao_servidor::envia_para_clientes(){
-    
+    if(this->quantidade_clientes == 0) return;
     for(int i=0; i<this->quantidade_clientes; i++){
-        write(this->sockets_clientes[i], this->buffer, sizeof(this->buffer));  
+        send(this->sockets_clientes[i], this->buffer, sizeof(this->buffer), 0);  
     }
 }
+
 
 
 //METODOS DA CLASSE FILHA CLIENTE
@@ -165,11 +142,17 @@ void conexao_cliente::cria_conexao(char ip[20]){
     if(connect(this->self_socket, (struct sockaddr *)&(this->endereco_socket), sizeof(this->endereco_socket)) < 0) erro("Criacao de conexao falhou!\n");	
 }
 
-
-void conexao_cliente::recebe_mensagens(){
-    read(this->self_socket, this->buffer, sizeof(this->buffer));
+//Metodo que envia uma mensagem quando ja setada uma conexao
+//args: (char*) Mensagem a ser enviada
+//return: (int) Quantidade de caracteres enviados
+int conexao_cliente::envia_mensagem(){
+    return send(this->self_socket, this->buffer, sizeof((this->buffer)), 0);
 }
 
+
+int conexao_cliente::recebe_mensagens(){
+    return recv(this->self_socket, this->buffer, sizeof(this->buffer), 0);
+}
 
 //Metodo que restarta a conexao com o servidor
 void conexao_cliente::restart_conexao(){
