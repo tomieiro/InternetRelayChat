@@ -1,4 +1,5 @@
 #include "socket_utils.h"
+#include <signal.h>
 
 int kill_descriptor[2];
 
