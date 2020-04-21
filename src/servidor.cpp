@@ -7,6 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
+    char buffer[4096] = {0};
 	conexao_servidor Conexao;
     Conexao.cria_conexao();
 	//Esperando conexao com cliente
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]){
         Conexao.recebe_envios();
 
         printf("%s\n",Conexao.get_mensagem());
-        if(Conexao.buffer[0] != 0) Conexao.limpa_mensagem();
+        if(buffer[0] != 0) Conexao.limpa_mensagem();
 
         printf("\n%s\n",Conexao.get_mensagem());
         if(Conexao.get_mensagem()[0] != 0){
