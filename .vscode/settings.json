@@ -40,5 +40,8 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp"
+
+        "locale": "cpp",
+        "iosfwd": "cpp"
     }
 }
