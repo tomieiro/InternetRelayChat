@@ -28,9 +28,14 @@ class conexao{
     void erro(const char*);
     void cria_conexao();
     void set_mensagem(char*);
+
+    int envia_mensagem();
     void limpa_mensagem();
     void finaliza_conexao();
     char *get_mensagem();
+    
+
+
 };
 
 //Classe servidor
@@ -42,7 +47,9 @@ class conexao_servidor : public conexao {
     conexao_servidor();
     void cria_conexao();
     void recebe_envios();
+    void repassa_mensagens();
     void envia_para_clientes();
+
 };
 
 //Classe cliente
