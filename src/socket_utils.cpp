@@ -1,5 +1,6 @@
 #include "socket_utils.h"
 #include <signal.h>
+#include <iostream>
 
 int kill_descriptor[2];
 
@@ -24,6 +25,7 @@ void conexao::set_mensagem(char b[4096]){
 char *conexao::get_mensagem(){
     return this->buffer;
 }
+
 
 //Metodo que envia uma mensagem quando ja setada uma conexao
 //args: (char*) Mensagem a ser enviada
@@ -86,8 +88,8 @@ void conexao_servidor::cria_conexao(){
 
 void conexao_servidor::recebe_envios(){
     //Endereco e seu tamanho declarados
-    static struct sockaddr_in aux_addr;
-    static socklen_t aux = sizeof(aux_addr);
+    struct sockaddr_in aux_addr;
+    socklen_t aux = sizeof(aux_addr);
     
     //Aceita conexoes
     if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(aux_addr), &aux))<0) erro("Falha ao aceitar conexoes!\n");
@@ -100,20 +102,52 @@ void conexao_servidor::recebe_envios(){
         //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
         static bool verificacao = true;
         for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
+            
             if(this->endereco_sockets_clientes[k].sin_addr.s_addr == aux_addr.sin_addr.s_addr){
                 verificacao = false;
             }
         }
         //Se verdadeiro que e sua primeira conexao, entra na lista
         if(verificacao){
-            this->quantidade_clientes++;
             this->endereco_sockets_clientes[this->quantidade_clientes] = aux_addr;
+            this->quantidade_clientes++;
         }
+
+       
         verificacao = true;
         aux = 0;
     }
 }
 
+
+//Metodo que repassa mensagem para os clientes
+/*
+void conexao_servidor::repassa_mensagens(){
+    
+    int socket_cliente; 
+    socklen_t size_addr;    
+
+     
+
+    for(int i = 0; i < this->quantidade_clientes; i++){
+        //Cria um novo socket para o cliente
+        if((socket_cliente = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
+
+        std::cout << endereco_sockets_clientes[i].sin_port << std::endl;
+
+        size_addr = sizeof(this->endereco_sockets_clientes[i]);
+        //Conecta o endereço do cliente ao socket
+        if(connect(socket_cliente, (struct sockaddr *) &(this->endereco_sockets_clientes[i]), size_addr) < 0) erro("Não conseguiu conectar\n");
+        
+        //Envia mensagem
+        if(send(socket_cliente, this->buffer, strlen(this->buffer), 0) < 0) erro("Não conseguiu enviar mensagem");
+
+        close(socket_cliente);
+
+    }
+
+}
+*/
 
 //METODOS DA CLASSE FILHA CLIENTE
 
@@ -153,4 +187,13 @@ void conexao_cliente::restart_conexao(){
 	if((this->self_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
     //Realiza conexao com o servidor
     if(connect(this->self_socket, (struct sockaddr *)&(this->endereco_socket), sizeof(this->endereco_socket)) < 0) erro("Criacao de conexao falhou!\n");
+}
+
+
+//Método que recebe qualquer mensagem que tenha sido enviado por um cliente
+char *conexao_cliente::recebe_mensagens(){
+
+    recv(this->self_socket, this->buffer, strlen(this->buffer), 0);
+    return this->buffer;
+
 }

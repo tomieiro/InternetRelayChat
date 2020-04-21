@@ -13,6 +13,7 @@ int main(int argc, char *argv[]){
     while(true){
         Conexao.recebe_envios();
         printf("%s\n",Conexao.get_mensagem());
+        Conexao.repassa_mensagens();
         if(buffer[0] != 0) Conexao.limpa_mensagem();
 	}
 }

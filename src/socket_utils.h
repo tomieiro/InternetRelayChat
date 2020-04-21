@@ -44,6 +44,7 @@ class conexao_servidor : public conexao {
     conexao_servidor();
     void cria_conexao();
     void recebe_envios();
+    void repassa_mensagens();
 };
 
 //Classe cliente
@@ -51,6 +52,7 @@ class conexao_cliente : public conexao {
     char *ip;
     public:
     void cria_conexao(char*);
+    char *recebe_mensagens();
     void restart_conexao();
 };
 

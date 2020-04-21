@@ -41,6 +41,7 @@ int main(int argc, char *argv[]){
                 Conexao.envia_mensagem();
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
+                //printf("%s\n", Conexao.recebe_mensagens());
             }else{
                 mensagem[buffer.length()] = '\0';
                 //Manda mensagem para o servidor
@@ -48,6 +49,7 @@ int main(int argc, char *argv[]){
                 Conexao.envia_mensagem();
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
+                //printf("%s\n", Conexao.recebe_mensagens());
                 break;
             }
         }while(1);
