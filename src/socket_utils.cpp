@@ -52,10 +52,6 @@ void conexao::finaliza_conexao(){
 //Construtor
 conexao_servidor::conexao_servidor(){
 
-        for(int i=0; i<MAX_CLIENTES; i++){
-            this->tam_endereco_cliente[i] = 0;
-        }
-
         this->quantidade_clientes = 0;
 }
 
@@ -101,34 +97,35 @@ void conexao_servidor::recebe_envios(){
     //Rodando apenas quando o evento accept ocorre
     if(aux != 0){
 
-    //Aceita conexoes
-    socklen_t aux = sizeof(this->endereco_socket);
-    if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_socket), &aux))<0) erro("Falha ao aceitar conexoes!\n");
-    
-    recv(socket_cliente_atual, this->buffer, sizeof(this->buffer), 0);
+        //Aceita conexoes
+        socklen_t aux = sizeof(this->endereco_socket);
+        if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_socket), &aux))<0) erro("Falha ao aceitar conexoes!\n");
+        
+        recv(socket_cliente_atual, this->buffer, sizeof(this->buffer), 0);
 
-    //Rodando apenas quando o evento accept ocorre
-    if(this->buffer[0] != 0){
+        //Rodando apenas quando o evento accept ocorre
+        if(this->buffer[0] != 0){
 
-        if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
+            if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
 
-        //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
-        static bool verificacao = true;
-        for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
+            //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
+            static bool verificacao = true;
+            for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
 
 
-            if(this->sockets_clientes[k] == socket_cliente_atual){
+                if(this->sockets_clientes[k] == socket_cliente_atual){
 
-                verificacao = false;
+                    verificacao = false;
+                }
             }
-        }
-        //Se verdadeiro que e sua primeira conexao, entra na lista
-        if(verificacao){
-            this->sockets_clientes[this->quantidade_clientes] = socket_cliente_atual;
-            this->quantidade_clientes++;
-        }
-        verificacao = true;
+            //Se verdadeiro que e sua primeira conexao, entra na lista
+            if(verificacao){
+                this->sockets_clientes[this->quantidade_clientes] = socket_cliente_atual;
+                this->quantidade_clientes++;
+            }
+            verificacao = true;
 
+        }
     }
 }
 
@@ -162,13 +159,14 @@ void conexao_servidor::repassa_mensagens(){
 }
 */
 
+/*
 void conexao_servidor::envia_para_clientes(){
     if(this->quantidade_clientes == 0) return;
     for(int i=0; i<this->quantidade_clientes; i++){
         send(this->sockets_clientes[i], this->buffer, sizeof(this->buffer), 0);  
     }
 }
-
+*/
 
 //METODOS DA CLASSE FILHA CLIENTE
 
@@ -201,7 +199,7 @@ void conexao_cliente::cria_conexao(char ip[20]){
     if(connect(this->self_socket, (struct sockaddr *)&(this->endereco_socket), sizeof(this->endereco_socket)) < 0) erro("Criacao de conexao falhou!\n");	
 }
 
-<
+
 //Metodo que envia uma mensagem quando ja setada uma conexao
 //args: (char*) Mensagem a ser enviada
 //return: (int) Quantidade de caracteres enviados
