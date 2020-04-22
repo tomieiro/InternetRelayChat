@@ -49,9 +49,7 @@ class conexao_servidor : public conexao {
     conexao_servidor();
     void cria_conexao();
     void recebe_envios();
-    //void repassa_mensagens();
-    //void envia_para_clientes();
-
+    void envia_para_clientes();
 };
 
 //Classe cliente

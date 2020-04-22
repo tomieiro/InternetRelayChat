@@ -100,28 +100,8 @@ void conexao_servidor::recebe_envios(){
         for(int k=1; k<=this->sockets_clientes.size(); k++){ //Rodando para todo o vetor de enderecos
             if(this->sockets_clientes.at(k) == socket_cliente_atual){
                 verificacao = false;
-    if(aux != 0){
-
-        //Aceita conexoes
-        socklen_t aux = sizeof(this->endereco_socket);
-        if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(this->endereco_socket), &aux))<0) erro("Falha ao aceitar conexoes!\n");
-        
-        recv(socket_cliente_atual, this->buffer, sizeof(this->buffer), 0);
-
-        //Rodando apenas quando o evento accept ocorre
-        if(this->buffer[0] != 0){
-
-            if(this->quantidade_clientes == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
-
-            //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
-            static bool verificacao = true;
-            for(int k=0; k<MAX_CLIENTES; k++){ //Rodando para todo o vetor de enderecos
-
-
-                if(this->sockets_clientes[k] == socket_cliente_atual){
-
-                    verificacao = false;
-                }
+            }
+        }
         //Se verdadeiro que e sua primeira conexao, entra na lista
         if(verificacao){
             this->sockets_clientes.push_back(socket_cliente_atual);
@@ -132,43 +112,12 @@ void conexao_servidor::recebe_envios(){
 }
 
 
-//Metodo que repassa mensagem para os clientes
-/*
-void conexao_servidor::repassa_mensagens(){
-    
-    int socket_cliente; 
-    socklen_t size_addr;    
-
-     
-
-    for(int i = 0; i < this->quantidade_clientes; i++){
-        //Cria um novo socket para o cliente
-        if((socket_cliente = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) erro("Criacao do Socket falhou!\n");
-
-        std::cout << endereco_sockets_clientes[i].sin_port << std::endl;
-
-        size_addr = sizeof(this->endereco_sockets_clientes[i]);
-        //Conecta o endereço do cliente ao socket
-        if(connect(socket_cliente, (struct sockaddr *) &(this->endereco_sockets_clientes[i]), size_addr) < 0) erro("Não conseguiu conectar\n");
-        
-        //Envia mensagem
-        if(send(socket_cliente, this->buffer, strlen(this->buffer), 0) < 0) erro("Não conseguiu enviar mensagem");
-
-        close(socket_cliente);
-
-    }
-
-}
-*/
-
-/*
 void conexao_servidor::envia_para_clientes(){
     if(this->sockets_clientes.size() == 0) return;
     for(int i=1; i<=this->sockets_clientes.size(); i++){
         send(this->sockets_clientes.at(i), this->buffer, sizeof(this->buffer), 0);  
     }
 }
-*/
 
 //METODOS DA CLASSE FILHA CLIENTE
 
