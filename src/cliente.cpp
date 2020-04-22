@@ -49,13 +49,12 @@ int main(int argc, char *argv[]){
                 //printf("%s\n", Conexao.recebe_mensagens());
             }else{
                 mensagem[buffer.length()+nome_usuario.length()] = '\0';
-
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
                 Conexao.envia_mensagem();
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
-                //printf("%s\n", Conexao.recebe_mensagens());
+                // printf("%s\n", Conexao.recebe_mensagens()); O PROBLEMA ESTA AQUI... TEMOS QUE TRABALHAR RAPAZES...
 
                 break;
             }
