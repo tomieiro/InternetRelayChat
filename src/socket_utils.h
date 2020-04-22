@@ -2,6 +2,8 @@
 #define SOCKET_UTILS_H
 
 //Importando bibliotecas
+#include <iostream>
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +14,7 @@
 #include <unistd.h>
 #include <signal.h>
 
+using namespace std;
 
 //DEFININDO CONSTANTES
 #define PORTA 31010
@@ -41,8 +44,7 @@ class conexao{
 //Classe servidor
 class conexao_servidor : public conexao {
     int socket_cliente_atual;
-    int sockets_clientes[MAX_CLIENTES];
-    int quantidade_clientes;
+    vector <int> sockets_clientes;
     public:
     conexao_servidor();
     void cria_conexao();

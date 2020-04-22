@@ -1,5 +1,4 @@
 #include "socket_utils.h"
-#include <signal.h>
 
 int kill_descriptor[2];
 
@@ -48,12 +47,10 @@ void conexao::finaliza_conexao(){
 
 //METODOS DA CLASSE FILHA SERVIDOR
 
-
-//Construtor
 conexao_servidor::conexao_servidor(){
-
-        this->quantidade_clientes = 0;
+    this->sockets_clientes.get_allocator().allocate(MAX_CLIENTES);
 }
+
 
 //Funcao para matar corretamente o programa fechando descritor da socket
 void die_corretly(int signal){
@@ -81,7 +78,7 @@ void conexao_servidor::cria_conexao(){
     if(bind(this->self_socket, (struct sockaddr *)&(this->endereco_socket), sizeof(this->endereco_socket)) < 0) erro("Reserva de endereco falhou!\n");
    
     //Habilita o socket para receber conexoes
-    if(listen(this->self_socket, this->quantidade_clientes) < 0) erro("Habilitar  de conexoes falhou!\n");
+    if(listen(this->self_socket, MAX_CLIENTES) < 0) erro("Habilitar  de conexoes falhou!\n");
 }
 
 void conexao_servidor::recebe_envios(){
@@ -95,6 +92,14 @@ void conexao_servidor::recebe_envios(){
     recv(this->socket_cliente_atual, this->buffer, 4096, 0);
     
     //Rodando apenas quando o evento accept ocorre
+    if(this->buffer[0] != 0){
+        if(this->sockets_clientes.size() == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
+
+        //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
+        static bool verificacao = true;
+        for(int k=1; k<=this->sockets_clientes.size(); k++){ //Rodando para todo o vetor de enderecos
+            if(this->sockets_clientes.at(k) == socket_cliente_atual){
+                verificacao = false;
     if(aux != 0){
 
         //Aceita conexoes
@@ -117,15 +122,12 @@ void conexao_servidor::recebe_envios(){
 
                     verificacao = false;
                 }
-            }
-            //Se verdadeiro que e sua primeira conexao, entra na lista
-            if(verificacao){
-                this->sockets_clientes[this->quantidade_clientes] = socket_cliente_atual;
-                this->quantidade_clientes++;
-            }
-            verificacao = true;
-
+        //Se verdadeiro que e sua primeira conexao, entra na lista
+        if(verificacao){
+            this->sockets_clientes.push_back(socket_cliente_atual);
         }
+        verificacao = true;
+
     }
 }
 
@@ -161,9 +163,9 @@ void conexao_servidor::repassa_mensagens(){
 
 /*
 void conexao_servidor::envia_para_clientes(){
-    if(this->quantidade_clientes == 0) return;
-    for(int i=0; i<this->quantidade_clientes; i++){
-        send(this->sockets_clientes[i], this->buffer, sizeof(this->buffer), 0);  
+    if(this->sockets_clientes.size() == 0) return;
+    for(int i=1; i<=this->sockets_clientes.size(); i++){
+        send(this->sockets_clientes.at(i), this->buffer, sizeof(this->buffer), 0);  
     }
 }
 */
