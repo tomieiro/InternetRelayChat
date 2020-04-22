@@ -16,8 +16,7 @@ int main(int argc, char *argv[]){
 
         printf("%s\n",Conexao.get_mensagem());
         if(buffer[0] != 0) Conexao.limpa_mensagem();
-
-        printf("\n%s\n",Conexao.get_mensagem());
+        
         if(Conexao.get_mensagem()[0] != 0){
             //Conexao.envia_para_clientes();
             Conexao.limpa_mensagem();

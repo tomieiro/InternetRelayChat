@@ -4,6 +4,7 @@
 //Importando bibliotecas
 #include <iostream>
 #include <vector>
+#include <iterator>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
