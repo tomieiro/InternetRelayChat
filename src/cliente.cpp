@@ -29,6 +29,7 @@ int main(int argc, char *argv[]){
     Conexao.cria_conexao(ip);
 
     //Verifica mensagens maiores que 4096 caracteres e as separam
+
     while(true){
         printf("Digite uma mensagem: ");
         getline(cin, buffer);
@@ -38,19 +39,24 @@ int main(int argc, char *argv[]){
             strncpy(mensagem+nome_usuario.length(), buffer.c_str(), tamanho_real_mensagem);
             if(buffer.length() > tamanho_real_mensagem){
                 buffer = buffer.substr(tamanho_real_mensagem-1, buffer.length()-(tamanho_real_mensagem-1));
+
                 mensagem[4095] = '\0';
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
                 Conexao.envia_mensagem();
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
+                //printf("%s\n", Conexao.recebe_mensagens());
             }else{
                 mensagem[buffer.length()+nome_usuario.length()] = '\0';
+
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
                 Conexao.envia_mensagem();
                 Conexao.finaliza_conexao();
                 Conexao.restart_conexao();
+                //printf("%s\n", Conexao.recebe_mensagens());
+
                 break;
             }
         }while(1);
