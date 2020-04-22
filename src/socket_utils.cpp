@@ -97,11 +97,12 @@ void conexao_servidor::recebe_envios(){
 
         //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
         static bool verificacao = true;
-        for(int k=1; k<=this->sockets_clientes.size(); k++){ //Rodando para todo o vetor de enderecos
-            if(this->sockets_clientes.at(k) == socket_cliente_atual){
+        for(vector<int>::iterator it = this->sockets_clientes.begin() ; it != this->sockets_clientes.end(); it = std::next(it, 1)){
+            if(*it == socket_cliente_atual){
                 verificacao = false;
             }
         }
+
         //Se verdadeiro que e sua primeira conexao, entra na lista
         if(verificacao){
             this->sockets_clientes.push_back(socket_cliente_atual);
