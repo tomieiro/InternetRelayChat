@@ -49,7 +49,7 @@ class conexao_servidor : public conexao {
     public:
     conexao_servidor();
     void cria_conexao();
-    void recebe_envios();
+    int recebe_envios();
     void envia_para_clientes();
 };
 

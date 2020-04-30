@@ -24,8 +24,6 @@ char *conexao::get_mensagem(){
     return this->buffer;
 }
 
-
-
 //Metodo que envia uma mensagem quando ja setada uma conexao
 //args: (char*) Mensagem a ser enviada
 //return: (int) Quantidade de caracteres enviados
@@ -56,6 +54,7 @@ conexao_servidor::conexao_servidor(){
 void die_corretly(int signal){
     close(kill_descriptor[0]);
     close(kill_descriptor[1]);
+    printf("\nFechando servidor...\n");
     exit(EXIT_SUCCESS);
 }
 
@@ -81,7 +80,7 @@ void conexao_servidor::cria_conexao(){
     if(listen(this->self_socket, MAX_CLIENTES) < 0) erro("Habilitar  de conexoes falhou!\n");
 }
 
-void conexao_servidor::recebe_envios(){
+int conexao_servidor::recebe_envios(){
 
     //Endereco e seu tamanho declarados
     struct sockaddr_in aux_addr;
@@ -89,11 +88,11 @@ void conexao_servidor::recebe_envios(){
     
     //Aceita conexoes
     if((this->socket_cliente_atual = accept(this->self_socket, (struct sockaddr*)&(aux_addr), &aux))<0) erro("Falha ao aceitar conexoes!\n");
-    recv(this->socket_cliente_atual, this->buffer, 4096, 0);
-    
+    int recebidos = recv(this->socket_cliente_atual, this->buffer, 4096, 0);
+
     //Rodando apenas quando o evento accept ocorre
     if(this->buffer[0] != 0){
-        if(this->sockets_clientes.size() == MAX_CLIENTES) return; //Caso a quantidade de clientes estoure o maximo
+        if(this->sockets_clientes.size() == MAX_CLIENTES) return 0; //Caso a quantidade de clientes estoure o maximo
 
         //Verificando se o endereco atual ja fez conexao alguma vez anteriormente
         static bool verificacao = true;
@@ -110,13 +109,16 @@ void conexao_servidor::recebe_envios(){
         verificacao = true;
 
     }
+    return recebidos;
 }
 
 
 void conexao_servidor::envia_para_clientes(){
     if(this->sockets_clientes.size() == 0) return;
-    for(int i=1; i<=this->sockets_clientes.size(); i++){
-        send(this->sockets_clientes.at(i), this->buffer, sizeof(this->buffer), 0);  
+    send(this->socket_cliente_atual, this->buffer, 4096, 0);
+    return;
+    for(int i=1; i<this->sockets_clientes.size(); i++){
+        send(this->sockets_clientes.at(i-1), this->buffer, 4096, 0);  
     }
 }
 
@@ -156,12 +158,12 @@ void conexao_cliente::cria_conexao(char ip[20]){
 //args: (char*) Mensagem a ser enviada
 //return: (int) Quantidade de caracteres enviados
 int conexao_cliente::envia_mensagem(){
-    return send(this->self_socket, this->buffer, sizeof((this->buffer)), 0);
+    return send(this->self_socket, this->buffer, 4096, 0);
 }
 
 
 int conexao_cliente::recebe_mensagens(){
-    return recv(this->self_socket, this->buffer, sizeof(this->buffer), 0);
+    return recv(this->self_socket, this->buffer, 4096, 0);
 }
 
 
