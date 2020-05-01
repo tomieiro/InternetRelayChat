@@ -1,27 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista.h"
+#include <string.h>
+#include "lista_clientes.h"
 
-struct LISTA_{
-	NO *inicio;
-	NO *fim;
-	int tam;
-};
-
-struct NO_{
-	TIPO item;
-	char ip[20];
-	NO *proximo;
-};
-
-LISTA *lista_criar(void){
-	LISTA *newL = (LISTA *)malloc(sizeof(LISTA));
-	if(newL != NULL){		
-		newL->inicio = NULL;
-		newL->fim = NULL;
-		newL->tam = 0;
+LISTA *lista_criar(){
+	LISTA *new = (LISTA *)malloc(sizeof(LISTA));
+	if(new != NULL){		
+		new->inicio = NULL;
+		new->fim = NULL;
+		new->tam = 0;
 	}
-	return newL;
+	return new;
 }
 
 void lista_apagar(LISTA *L){
@@ -40,11 +29,11 @@ void lista_apagar(LISTA *L){
 	}
 }
 
-TIPO lista_buscar_item(LISTA *L, TIPO chave){
+SOCKET lista_buscar_item(LISTA *L, char ip[20]){
 	NO *aux = L->inicio;
 	if(L != NULL){
 		while(aux != NULL){
-			if(aux->item == chave) return aux->item;
+			if(strcmp(aux->ip,ip)) return aux->self_socket;
 			aux = aux->proximo;
 		}
 	}
@@ -52,13 +41,13 @@ TIPO lista_buscar_item(LISTA *L, TIPO chave){
 }	
 
 
-int lista_inserir_fim(LISTA *L, TIPO item, char ip[20]){
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket){
 	NO *aux = NULL;
 	if(L == NULL) return (ERRO);
 	aux = (NO *) malloc(sizeof(NO));
 	if(aux != NULL){
-		aux->item = item;
-		strcpy(aux->ip,ip);
+        strcpy(aux->ip,ip);
+        aux->self_socket = self_socket;
 		aux->proximo = NULL;
 		/*CASO DE PRIMEIRO ELEMENTO*/
 		if(lista_vazia(L)){
@@ -75,11 +64,12 @@ int lista_inserir_fim(LISTA *L, TIPO item, char ip[20]){
 	return 0; /*FALHA*/
 }
 
-int lista_remover_item(LISTA *L, TIPO chave){
+
+int lista_remover_item(LISTA *L, char ip[20]){
 	NO *p = NULL, *aux = NULL;
 	if(L != NULL && !lista_vazia(L)){
 		p = L->inicio;
-		while((p != NULL) && (p->item != chave)){
+		while((p != NULL) && (!strcmp(p->ip,ip))){
 			aux = p; /* aux_busca recebe o nó anterior de aux_remocao*/
 			p = p->proximo;
 		}
@@ -109,18 +99,4 @@ int lista_vazia(LISTA *L){
 
 int lista_tamanho(LISTA *L){
 	return (L != NULL ? L->tam : ERRO);	
-}
-
-void lista_at(LISTA *L, int pos, int *elemento, char *ip){
-	NO *aux = L->inicio;
-	int count = 0;
-	while(aux != NULL){
-		if(count == pos){
-			*elemento = aux->item;
-			ip = aux->ip;
-			return;
-		}
-		aux = aux->proximo;
-	}
-	return ERRO;
 }

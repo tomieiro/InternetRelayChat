@@ -2,14 +2,12 @@ all: run_servidor
 	echo "Starting..."
 
 run_servidor:
-
-	g++	-o	bin/servidor	src/lista.c	src/socket_utils.cpp	src/servidor.cpp	-lpthread
+	gcc	-o	bin/servidor	src/lista_clientes.c	src/servidor.c	-lpthread
 	./bin/servidor
 
 run_cliente:
-	g++	-o	bin/cliente	src/lista.c	src/socket_utils.cpp	src/cliente.cpp	-lpthread
+	gcc	-o	bin/cliente	src/cliente.c	-lpthread
 	./bin/cliente
 	
-  
 clean:
 	rm bin/*
