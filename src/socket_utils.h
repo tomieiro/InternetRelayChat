@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
+#include "lista.h"
 
 using namespace std;
 
@@ -45,7 +46,7 @@ class conexao{
 //Classe servidor
 class conexao_servidor : public conexao {
     int socket_cliente_atual;
-    vector <int> sockets_clientes;
+    LISTA *sockets_clientes;
     public:
     conexao_servidor();
     void cria_conexao();

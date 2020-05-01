@@ -11,7 +11,7 @@ conexao_cliente Conexao;
 bool SAIR = false;
 
 void next_msg(){
-    Conexao.finaliza_conexao();
+    
     Conexao.restart_conexao();
 }
 
@@ -37,7 +37,6 @@ void *envia_mensagem(void *args){
             strncpy(mensagem+nome_usuario.length(), buffer.c_str(), tamanho_real_mensagem);
             if(buffer.length() > tamanho_real_mensagem){
                 buffer = buffer.substr(tamanho_real_mensagem-1, buffer.length()-(tamanho_real_mensagem-1));
-
                 mensagem[4095] = '\0';
                 //Manda mensagem para o servidor
                 Conexao.set_mensagem(mensagem);
