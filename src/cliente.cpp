@@ -55,7 +55,7 @@ void *recebe_mensagem(void *args){
 	char mensagem[TAM_MSG_MAX];
 	while(1){
 		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
-		printf("\n%s\n", mensagem);
+		printf("\n\r%s\n", mensagem);
         fflush(stdout);
 	}
 }
