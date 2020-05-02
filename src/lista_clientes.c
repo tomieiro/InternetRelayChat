@@ -97,6 +97,10 @@ int lista_vazia(LISTA *L){
  	return 0;
 }
 
-int lista_tamanho(LISTA *L){
-	return (L != NULL ? L->tam : ERRO);	
+void printLista(LISTA *l){
+	NO *aux = l->inicio;
+	while(aux != NULL){
+			printf("FD: %d ; IP: %s\n",aux->self_socket, aux->ip);
+			aux = aux->proximo;
+		}
 }

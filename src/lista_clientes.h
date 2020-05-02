@@ -32,7 +32,6 @@ int lista_remover_item(LISTA *L, char *ip);
 
 /*Outras funções:*/
 int lista_vazia(LISTA *L);
-int lista_tamanho(LISTA *L);
-
+void printLista(LISTA *l);
 
 #endif

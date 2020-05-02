@@ -2,6 +2,7 @@
 
 SOCKET self_socket;
 int QUIT = 0;
+char *aux;
 
 //Metodo que lanca um erro e termina o programa
 //args: (const char*) Frase de erro
@@ -13,19 +14,19 @@ void erro(const char erro[100]){
 //Funcao para matar corretamente o programa fechando descritor da socket
 void die_corretly(int signal){
     close(self_socket);
+    free(aux);
     printf("\nSaindo...\n");
     exit(EXIT_SUCCESS);
 }
 
 void envia_mensagem(void *arg){
-    char mensagem[TAM_MSG_MAX], *aux;
+    char mensagem[TAM_MSG_MAX];
     aux = malloc(TAM_MAX_BUFFER*sizeof(char));
     int count;
     while(1){
 		count = 0;
         scanf("%s", aux);
-        printf("aux:%s\n",aux);
-        if(!strcmp(aux, "/quit")) printf("QUIT?");
+        if(!strcmp(aux, "/quit")) QUIT = 1;
 		while(1){
 			if((strlen(aux) - count) > TAM_MSG_MAX - 1){
 				strncpy(mensagem,&aux[count],TAM_MSG_MAX - 1);
@@ -40,10 +41,9 @@ void envia_mensagem(void *arg){
 			}
 		}
     }
-    free(aux);
 }
 
-void recebe_mensagem(void *arg){
+void recebe_mensagem(){
 	char mensagem[TAM_MSG_MAX];
 	while(1){
 		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 	signal(SIGINT,die_corretly);
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
-    scanf("%[^\n]", ip);
+    scanf("%s", ip);
     
     //Criando Socket com a socket()
 	if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
@@ -82,5 +82,6 @@ int main(int argc, char *argv[]){
         if(QUIT) break;
 	}
 	close(self_socket);
+    free(aux);
 	return 0;
 }
