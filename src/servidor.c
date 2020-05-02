@@ -24,7 +24,6 @@ void die_corretly(int signal){
 }
 
 void gerencia_dados(NO *atual){
-    printf("SOCKET: %d\n",atual->self_socket);
     signal(SIGINT,die_corretly);
     NO *aux;
     char buffer[TAM_MSG_MAX];
@@ -65,9 +64,7 @@ int main(int argc, char *argv[]){
     while(1){
 		socket_clientes_atual = accept(self_socket, (struct sockaddr*)&endereco_cliente, (socklen_t*)&aux);
         printf("O IP: %s se conectou!\n",inet_ntoa(endereco_cliente.sin_addr));
-        lista_inserir(clientes, inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);
-        printLista(clientes);
-        pthread_t gerenciaDados;
+        lista_inserir(clientes, inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);        pthread_t gerenciaDados;
         if(pthread_create(&gerenciaDados, NULL, (void*)gerencia_dados, clientes->fim) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }
 	
