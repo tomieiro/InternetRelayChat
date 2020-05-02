@@ -66,14 +66,15 @@ void *instanciaGui(void *args){
     window->end();
     window->show();
     Fl::run();
+    return NULL;
 }
 
 
 int main(int argc, char *argv[]){
-
+    /*
     pthread_t gui;
     pthread_create(&gui,NULL,instanciaGui, NULL);
-
+    */
 	signal(SIGINT,die_corretly);
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
