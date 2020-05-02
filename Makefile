@@ -6,7 +6,7 @@ run_servidor:
 	./bin/servidor
 
 run_cliente:
-	g++	-o	bin/cliente	src/cliente.cpp	-lpthread	-lfltk
+	g++	-o	bin/cliente	src/cliente.cpp	-lpthread
 	./bin/cliente
 	
 clean:
