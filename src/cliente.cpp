@@ -1,8 +1,16 @@
+#include <iostream>
+#include <string>
 #include "cliente.h"
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Box.H>
 
 SOCKET self_socket;
 int QUIT = 0;
 char *aux;
+
+using namespace std;
+
 
 //Metodo que lanca um erro e termina o programa
 //args: (const char*) Frase de erro
@@ -19,13 +27,15 @@ void die_corretly(int signal){
     exit(EXIT_SUCCESS);
 }
 
-void envia_mensagem(void *arg){
+void *envia_mensagem(void *args){
     char mensagem[TAM_MSG_MAX];
-    aux = malloc(TAM_MAX_BUFFER*sizeof(char));
+    string str;
+    aux =(char*) malloc(TAM_MAX_BUFFER*sizeof(char));
     int count;
     while(1){
 		count = 0;
-        scanf("%s", aux);
+        getline(cin, str);
+        strcpy(aux,str.c_str());
         if(!strcmp(aux, "/quit")) QUIT = 1;
 		while(1){
 			if((strlen(aux) - count) > TAM_MSG_MAX - 1){
@@ -43,7 +53,7 @@ void envia_mensagem(void *arg){
     }
 }
 
-void recebe_mensagem(){
+void *recebe_mensagem(void *args){
 	char mensagem[TAM_MSG_MAX];
 	while(1){
 		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
@@ -51,8 +61,19 @@ void recebe_mensagem(){
 	}
 }
 
+void *instanciaGui(void *args){
+    Fl_Window *window = new Fl_Window(800,600);
+    window->end();
+    window->show();
+    Fl::run();
+}
+
 
 int main(int argc, char *argv[]){
+
+    pthread_t gui;
+    pthread_create(&gui,NULL,instanciaGui, NULL);
+
 	signal(SIGINT,die_corretly);
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
@@ -72,10 +93,10 @@ int main(int argc, char *argv[]){
     if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");	
     
     pthread_t enviaMsg;
-    if(pthread_create(&enviaMsg, NULL, (void*)envia_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
+    if(pthread_create(&enviaMsg, NULL, envia_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
     
     pthread_t recebeMsg;
-    if(pthread_create(&recebeMsg, NULL, (void*)recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
+    if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
     
     while(1){
 		//Rodando ate encontrar o SIGINT(Ctrl + C)
