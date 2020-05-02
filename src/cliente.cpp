@@ -2,7 +2,6 @@
 #include <string>
 #include "cliente.h"
 
-
 SOCKET self_socket;
 int QUIT = 0;
 char *aux;
