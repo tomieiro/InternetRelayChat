@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
 #include "cliente.h"
-
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Box.H>
 
 SOCKET self_socket;
 int QUIT = 0;
@@ -59,8 +61,20 @@ void *recebe_mensagem(void *args){
 	}
 }
 
+void *instanciaGui(void *args){
+    Fl_Window *window = new Fl_Window(800,600);
+    window->end();
+    window->show();
+    Fl::run();
+    return NULL;
+}
+
 
 int main(int argc, char *argv[]){
+    /*
+    pthread_t gui;
+    pthread_create(&gui,NULL,instanciaGui, NULL);
+    */
 	signal(SIGINT,die_corretly);
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
