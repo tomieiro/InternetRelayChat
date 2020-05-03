@@ -6,8 +6,11 @@ run_servidor:
 	./bin/servidor
 
 run_cliente:
-	g++	-o	bin/cliente	src/cliente.cpp	-lpthread
+	g++	-o	bin/cliente	src/gui.cxx	src/cliente.cpp	-lpthread -lfltk
 	./bin/cliente
 	
+install_libs:
+	sudo	apt	install	libfltk1.3-dev
+
 clean:
 	rm bin/*
