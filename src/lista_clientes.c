@@ -3,6 +3,8 @@
 #include <string.h>
 #include "lista_clientes.h"
 
+//Funcao que cria uma lista
+//return (LISTA*) lista criada
 LISTA *lista_criar(){
 	LISTA *new = (LISTA *)malloc(sizeof(LISTA));
 	if(new != NULL){		
@@ -13,6 +15,8 @@ LISTA *lista_criar(){
 	return new;
 }
 
+//Funcao que apaga uma lista
+//args: (LISTA*) lista qual se deseja alterar
 void lista_apagar(LISTA *L){
 	if(L != NULL && !lista_vazia(L)){
    		NO *no = L->inicio,*aux;
@@ -29,6 +33,9 @@ void lista_apagar(LISTA *L){
 	}
 }
 
+//Funcao que busca um item em uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*) string do ip
+//return:(SOCKET) socket relacionado aquele IP
 SOCKET lista_buscar_item(LISTA *L, char ip[20]){
 	NO *aux = L->inicio;
 	if(L != NULL){
@@ -40,7 +47,9 @@ SOCKET lista_buscar_item(LISTA *L, char ip[20]){
 	return (ERRO);
 }	
 
-
+//Funcao que insere um item em uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*)string do ip, (SOCKET)FD do socket a inserir
+//return:(int) 1 se sucesso, 0 se fracasso
 int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket){
 	NO *aux = NULL;
 	if(L == NULL) return (ERRO);
@@ -64,7 +73,9 @@ int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket){
 	return 0; /*FALHA*/
 }
 
-
+//Funcao que remove um item de uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*)IP qual se deseja remover o FD
+//return: (int) 1 se o item foi removido com sucesso, 0 se houve erro
 int lista_remover_item(LISTA *L, char ip[20]){
 	NO *p = NULL, *aux = NULL;
 	if(L != NULL && !lista_vazia(L)){
@@ -92,11 +103,16 @@ int lista_remover_item(LISTA *L, char ip[20]){
 	return 0;
 }
 
+//Funcao que verifica se uma lista esta vazia
+//args: (LISTA*) lista qual se deseja verificar
+//return:(int) 0 se esta cheia, 1 se esta vazia
 int lista_vazia(LISTA *L){
 	if(L != NULL && L->inicio == NULL) return 1;
  	return 0;
 }
 
+//Funcao que printa uma lista
+//args: (LISTA*) lista qual se deseja printar
 void printLista(LISTA *l){
 	NO *aux = l->inicio;
 	while(aux != NULL){
