@@ -34,6 +34,7 @@ void *envia_mensagem(void *args){
     int count;
     while(1){
 		count = 0;
+        printf("VOCE: ");
         getline(cin, str);
         strcpy(aux,str.c_str());
         if(!strcmp(aux, "/quit")) QUIT = 1;
@@ -57,7 +58,8 @@ void *recebe_mensagem(void *args){
 	char mensagem[TAM_MSG_MAX];
 	while(1){
 		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
-		printf("%s\n", mensagem);
+		printf("\n\r%s\n", mensagem);
+        fflush(stdout);
 	}
 }
 
@@ -79,7 +81,8 @@ int main(int argc, char *argv[]){
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
     scanf("%s", ip);
-    
+    getchar();
+
     //Criando Socket com a socket()
 	if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
     
