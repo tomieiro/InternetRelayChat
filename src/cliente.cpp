@@ -33,7 +33,7 @@ void *envia_mensagem(void *args){
     int count;
     while(1){
 		count = 0;
-        printf("VOCE: ");
+        printf("\nVOCE: ");
         getline(cin, str);
         strcpy(aux,str.c_str());
         if(!strcmp(aux, "/quit")) QUIT = 1;
