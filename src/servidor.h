@@ -10,6 +10,8 @@
 #include <pthread.h>
 #include "lista_clientes.h"
 
+//DEFININDO CONSTANTES
+
 #define PORTA 31010
 #define TAM_MSG_MAX 4096
 #define MAX_CLIENTES 3
