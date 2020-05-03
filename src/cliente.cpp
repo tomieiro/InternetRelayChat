@@ -1,99 +1,102 @@
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "socket_utils.h"
-#include <pthread.h>
+#include <string>
+#include "cliente.h"
+
+
+//Definindo variaveis globais
+SOCKET self_socket;
+int QUIT = 0;
+char *aux;
 
 using namespace std;
 
-conexao_cliente Conexao;
-bool SAIR = false;
-
-void next_msg(){
-    Conexao.finaliza_conexao();
-    Conexao.restart_conexao();
+//Metodo que lanca um erro e termina o programa
+//args: (const char*) Frase de erro
+void erro(const char erro[100]){
+    perror(erro);
+    exit(EXIT_FAILURE);
 }
 
+//Funcao para matar corretamente o programa fechando descritor da socket
+void die_corretly(int signal){
+    close(self_socket);
+    free(aux);
+    printf("\nSaindo...\n");
+    exit(EXIT_SUCCESS);
+}
+
+//Funcao que eh aberta na thread para enviar mensagens
 void *envia_mensagem(void *args){
-    string buffer; //Buffer
-    char mensagem[4096]; //Mensagem
-    string nome_usuario; //Nome do usuário
-    int tamanho_real_mensagem;
-
-    printf("Escreva um nome para o usuário: ");
-    getline(cin, nome_usuario);
-    nome_usuario = nome_usuario + " : ";
-    tamanho_real_mensagem = 4096 - nome_usuario.length(); 
-    strncpy(mensagem, nome_usuario.c_str(), nome_usuario.length()); 
-    while(true){
-        getline(cin, buffer);
-        if(!strcmp(buffer.c_str(), "/quit")){
-            SAIR = true;
-            break;
-        }
-        do{
-            //Verifica mensagens maiores que 4096 caracteres e as separam
-            strncpy(mensagem+nome_usuario.length(), buffer.c_str(), tamanho_real_mensagem);
-            if(buffer.length() > tamanho_real_mensagem){
-                buffer = buffer.substr(tamanho_real_mensagem-1, buffer.length()-(tamanho_real_mensagem-1));
-
-                mensagem[4095] = '\0';
-                //Manda mensagem para o servidor
-                Conexao.set_mensagem(mensagem);
-                Conexao.envia_mensagem();
-                next_msg();
-            }else{
-                mensagem[buffer.length()+nome_usuario.length()] = '\0';
-                //Manda mensagem para o servidor
-                Conexao.set_mensagem(mensagem);
-                Conexao.envia_mensagem();
-                next_msg();
-                break;
-            }
-        }while(1);
+    char mensagem[TAM_MSG_MAX];
+    string str;
+    aux =(char*) malloc(TAM_MAX_BUFFER*sizeof(char));
+    int count;
+    while(1){
+		count = 0;
+        printf("\nVOCE: ");
+        getline(cin, str);
+        strcpy(aux,str.c_str());
+        if(!strcmp(aux, "/quit")) QUIT = 1;
+		while(1){
+			if((strlen(aux) - count) > TAM_MSG_MAX - 1){
+				strncpy(mensagem,&aux[count],TAM_MSG_MAX - 1);
+				mensagem[TAM_MSG_MAX - 1] = '\0';
+				count += TAM_MSG_MAX;
+				send(self_socket, mensagem, TAM_MSG_MAX, 0);
+			}else{
+				strncpy(mensagem,&aux[count],TAM_MSG_MAX - 1);
+				mensagem[TAM_MSG_MAX - 1] = '\0';
+				send(self_socket, mensagem, TAM_MSG_MAX, 0);
+				break;
+			}
+		}
     }
-    return NULL;
 }
 
+//Funcao que eh aberta na thread para receber mensagens
 void *recebe_mensagem(void *args){
-    int size = 0;
-    while(true){
-        size = Conexao.recebe_mensagens();
-        if(size > 0){
-            printf("\r%s\nDigite sua mensagem: ",Conexao.get_mensagem());
-            Conexao.limpa_mensagem();
-            fflush(stdout);
-            size = 0;
-        }
-    }
-    return NULL;
+	char mensagem[TAM_MSG_MAX];
+	while(1){
+		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
+		if(strcmp("",mensagem)) printf("\n\r%s\n", mensagem);
+        fflush(stdout);
+	}
 }
 
-
+//Main
 int main(int argc, char *argv[]){
-    char ip[20]; //Endereco de IP do servidor
-    
+	signal(SIGINT,die_corretly);
+	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
-    scanf("%[^\n]s", ip);
-
+    scanf("%s", ip);
     getchar();
 
-    Conexao.cria_conexao(ip);
-
-    pthread_t enviaMensagemC;
-    if(pthread_create(&enviaMensagemC, NULL,envia_mensagem, NULL) != 0){
-        exit(EXIT_FAILURE);
-    }
-    pthread_t recebeMensagemC;
-    if(pthread_create(&recebeMensagemC, NULL,recebe_mensagem, NULL) != 0){
-        exit(EXIT_FAILURE);
-    }
+    //Criando Socket com a socket()
+	if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
     
-	//Fim do programa
-	while(true){
-    if(SAIR)
-        return EXIT_SUCCESS;
-    }
-    Conexao.finaliza_conexao();
+    struct sockaddr_in endereco_servidor;
+    
+    //Definindo parametros do endereco
+	endereco_servidor.sin_family = PF_INET; //Definindo familia do endereco de internet
+    endereco_servidor.sin_addr.s_addr = inet_addr(ip);
+    endereco_servidor.sin_port = htons(PORTA); //Definindo porta
+    
+    //Realiza conexao com o servidor
+    if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");	
+    
+    //Abrindo uma thread para enviar mensagens
+    pthread_t enviaMsg;
+    if(pthread_create(&enviaMsg, NULL, envia_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
+    
+    //Abrindo uma thread para receber mensagens
+    pthread_t recebeMsg;
+    if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
+    
+    while(1){
+		//Rodando ate encontrar o SIGINT(Ctrl + C)
+        if(QUIT) break;
+	}
+	close(self_socket);
+    free(aux);
+	return 0;
 }
