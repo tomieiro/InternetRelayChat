@@ -26,10 +26,15 @@ void die_corretly(int signal){
 void gerencia_dados(NO *atual){
     signal(SIGINT,die_corretly);
     NO *aux;
+    int recebidos;
     char buffer[TAM_MSG_MAX];
     while(1){
         aux = clientes->inicio;
-        recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        if(recebidos <= 0){
+            lista_remover_item(clientes, atual->ip);
+            break;
+        }
         while(aux != NULL){
             if(aux->self_socket != atual->self_socket){
                 send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
