@@ -20,6 +20,7 @@ int IP_EXISTS = false;
 int ENVIAR = false;
 char *aux; //String auxiliar do buffer
 char ip[20]; //Endereco de IP do servidor
+char user[20];
 
 
 using namespace std;
@@ -42,7 +43,8 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
     string concat;
     concat.append("\tYOU: "); concat.append(escrita->value()); concat.append("\n"); //Coloca sua msg na tela
     buffer->append(concat.c_str());
-    strcpy(aux,escrita->value());
+    strcpy(aux, user);
+    strcat(aux,escrita->value());
     escrita->value("");
     mensagens->redraw();
     ENVIAR = true;
@@ -53,6 +55,7 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
 static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     if(!strcmp(ipServ->value(),"") || !strcmp(ipServ->value(),"")) return;
     strcpy(ip, ipServ->value());
+    strcpy(user, username->value());
     IP_EXISTS = true;
     ipServ->deactivate();
     ipServ->hide();
@@ -82,7 +85,7 @@ Fl_Double_Window* make_window() {
       username = new Fl_Input(235, 210, 290, 30, "DIGITE SEU USERNAME:");
       username->labelfont(4);
       username->textfont(4);
-      username->hide(); //REMOVER ESSA LINHA QUANDO FOR IMPLEMENTAR MULTI USUARIO
+      //username->hide(); //REMOVER ESSA LINHA QUANDO FOR IMPLEMENTAR MULTI USUARIO
     } // Fl_Input* username
     {
       buffer = new Fl_Text_Buffer();
