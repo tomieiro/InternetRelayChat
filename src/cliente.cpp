@@ -25,6 +25,10 @@ void die_corretly(int signal){
     exit(EXIT_SUCCESS);
 }
 
+void alert(int signal){
+    printf("Use o CTRL + D (SIGTSTP) para sair!\n");
+}
+
 //Funcao que eh aberta na thread para enviar mensagens
 void *envia_mensagem(void *args){
     char mensagem[TAM_MSG_MAX];
@@ -34,7 +38,7 @@ void *envia_mensagem(void *args){
     while(1){
 		count = 0;
         printf("\n YOU: ");
-        getline(cin, str);
+        if(!getline(cin, str)) die_corretly(SIGKILL);
         strcpy(aux,str.c_str());
         if(!strcmp(aux, "/quit")) QUIT = 1;
 		while(1){
@@ -65,7 +69,8 @@ void *recebe_mensagem(void *args){
 
 //Main
 int main(int argc, char *argv[]){
-	signal(SIGINT,die_corretly);
+	signal(SIGINT,alert);
+    signal(SIGTSTP, die_corretly);
 	char ip[20]; //Endereco de IP do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
     scanf("%s", ip);

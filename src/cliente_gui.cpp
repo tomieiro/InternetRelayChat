@@ -189,7 +189,8 @@ void *instanciaGui(void *args){
 int main(int argc, char *argv[]){
     pthread_t gui;
     pthread_create(&gui,NULL,instanciaGui, NULL); //Abre uma socket para a GUI
-	signal(SIGINT,die_corretly); //Trata o sigint
+	signal(SIGTSTP,die_corretly);
+    signal(SIGINT,die_corretly);    //Trata o sigint
 
     while(1){
         if(IP_EXISTS and !QUIT){ //Se o usuario digitar o ip
