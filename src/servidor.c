@@ -36,6 +36,11 @@ void gerencia_dados(NO *atual){
         aux = clientes->inicio;
         recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
         if(recebidos <= 0){
+            for(int i=0; i<4; i++){ //Tentando mais 4 vezes receber a mensagem
+                recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+                if(recebidos > 0) goto erro_de_conexao;
+            }
+            erro_de_conexao:
             lista_remover_item(clientes, atual->ip);
             break;
         }
@@ -85,6 +90,5 @@ int main(int argc, char *argv[]){
         pthread_t gerenciaDados;
         if(pthread_create(&gerenciaDados, NULL, (void*)gerencia_dados, clientes->fim) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }
-	
 	return 0;
 }
