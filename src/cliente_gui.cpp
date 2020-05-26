@@ -32,7 +32,7 @@ using namespace std;
 //Funcao handle para receber e colocar as mensagens na tela
 static void cb_receber(char *rec) {
     string concat;
-    concat.append("USER_2: "); concat.append(rec); concat.append("\n"); 
+    concat.append(user); concat.append(" : "); concat.append(rec); concat.append("\n"); 
     if(strcmp(rec,"")) buffer->append(concat.c_str()); //Coloca mensagem na tela
     mensagens->redraw();
     return;
