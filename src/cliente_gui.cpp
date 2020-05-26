@@ -32,7 +32,7 @@ using namespace std;
 //Funcao handle para receber e colocar as mensagens na tela
 static void cb_receber(char *rec) {
     string concat;
-    concat.append(user); concat.append(" : "); concat.append(rec); concat.append("\n"); 
+    concat.append(rec); concat.append("\n"); 
     if(strcmp(rec,"")) buffer->append(concat.c_str()); //Coloca mensagem na tela
     mensagens->redraw();
     return;
@@ -44,6 +44,7 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
     concat.append("\tYOU: "); concat.append(escrita->value()); concat.append("\n"); //Coloca sua msg na tela
     buffer->append(concat.c_str());
     strcpy(aux, user);
+    strcpy(aux, " : ");
     strcat(aux,escrita->value());
     escrita->value("");
     mensagens->redraw();
