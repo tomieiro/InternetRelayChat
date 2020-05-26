@@ -11,6 +11,7 @@ Fl_Return_Button *bEnviar=(Fl_Return_Button *)0;
 Fl_Input *ipServ=(Fl_Input *)0;
 Fl_Input *username=(Fl_Input *)0;
 Fl_Return_Button *startChat=(Fl_Return_Button *)0;
+Fl_Return_Button *bPing=(Fl_Return_Button *)0;
 
 //Definindo variaveis globais
 SOCKET self_socket;
@@ -62,10 +63,15 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     ipServ->hide();
     username->deactivate();
     username->hide();
+    bPing->show();
     bEnviar->label("ENVIAR");
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
     escrita->show();
+}
+
+static void cb_bPing(){
+    //A fazer
 }
 
 /**
@@ -100,7 +106,7 @@ Fl_Double_Window* make_window() {
       mensagens->hide();
     } // Fl_Text_Display* mensagens
     { // Cria buffer de escrita
-      escrita = new Fl_Input(10, 390, 535, 115);
+      escrita = new Fl_Input(10, 390, 535, 75);
       escrita->color((Fl_Color)23);
       escrita->labelfont(4);
       escrita->textfont(4);
@@ -112,6 +118,12 @@ Fl_Double_Window* make_window() {
       bEnviar->labelfont(4);
       bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
     } // Fl_Return_Button* bEnviar
+    { // Criando botao de ping
+      bPing = new Fl_Return_Button(10, 485, 535, 25, "PING");
+      bPing->labelfont(4);
+      bPing->callback((Fl_Callback*)cb_bPing);
+      bPing->hide();
+    }
     janela->end();
     janela->show();
   } // Fl_Double_Window* janela
