@@ -25,6 +25,16 @@ void die_corretly(int signal){
     exit(EXIT_SUCCESS);
 }
 
+//Função que verifica se o cliente digitou o comando ping
+
+int ping(NO *atual, char *buffer){
+    if(!strcmp(buffer, "/ping")){
+        strcpy(buffer,"pong");
+        send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        return 0;
+    }
+}
+
 //Funcao que gerencia todos os clientes no servidor
 //args:(NO*) No atual da lista do cliente que se conectou no momento
 void gerencia_dados(NO *atual){
@@ -44,6 +54,9 @@ void gerencia_dados(NO *atual){
             lista_remover_item(clientes, atual->ip);
             break;
         }
+    
+        if(!ping(atual, buffer)) aux = NULL;
+
         while(aux != NULL){
             if(aux->self_socket != atual->self_socket){
                 send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
