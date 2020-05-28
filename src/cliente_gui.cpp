@@ -71,7 +71,11 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
 }
 
 static void cb_bPing(){
-    //A fazer
+    buffer->append("Voce solicitou o comando ping ao servidor!\n");
+    strcpy(aux, "/ping");
+    mensagens->redraw();
+    ENVIAR = true;
+    return;
 }
 
 /**
@@ -113,17 +117,18 @@ Fl_Double_Window* make_window() {
       escrita->align(Fl_Align(FL_ALIGN_TOP_LEFT));
       escrita->hide();
     } // Fl_Input* escrita
-    { // Criando botao de enviar
-      bEnviar = new Fl_Return_Button(10, 515, 535, 25, "   START CHAT");
-      bEnviar->labelfont(4);
-      bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
-    } // Fl_Return_Button* bEnviar
-    { // Criando botao de ping
-      bPing = new Fl_Return_Button(10, 485, 535, 25, "PING");
+     // Criando botao de ping
+      bPing = new Fl_Return_Button(10, 515, 535, 25, "PING");
       bPing->labelfont(4);
       bPing->callback((Fl_Callback*)cb_bPing);
       bPing->hide();
     }
+    { // Criando botao de enviar
+      bEnviar = new Fl_Return_Button(10, 485, 535, 25, "   START CHAT");
+      bEnviar->labelfont(4);
+      bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
+    } // Fl_Return_Button* bEnviar
+    {
     janela->end();
     janela->show();
   } // Fl_Double_Window* janela
@@ -154,7 +159,7 @@ void *envia_mensagem(void *args){
     string str;
     aux =(char*) malloc(TAM_MAX_BUFFER*sizeof(char));
     int count;
-    while(1){
+    while(!QUIT){
 		count = 0;
         if(ENVIAR){
             if(!strcmp(aux, "/quit")) QUIT = true;
@@ -175,25 +180,34 @@ void *envia_mensagem(void *args){
 
         }
     }
+    pthread_exit(NULL);
 }
 
 //Funcao que eh aberta na thread para receber mensagens
 void *recebe_mensagem(void *args){
 	char mensagem[TAM_MSG_MAX];
     int count;
-	while(1){
+	while(!QUIT){
 		if(recv(self_socket, mensagem, TAM_MSG_MAX, 0) == 0) erro("Erro ao receber do servidor!\n");
         cb_receber(mensagem);
         fflush(stdout);
 	}
+    pthread_exit(NULL);
+}
+
+//Funcao que atualiza a janela a cada 0.05 segundos
+void refresh_all(void*){
+    janela->flush();
+    Fl::repeat_timeout(0.05, refresh_all);
+    if(mensagens->count_lines());
 }
 
 //Funcao que instancia a GUI
 void *instanciaGui(void *args){
     make_window();
+    Fl::add_timeout(0.05,refresh_all);
     Fl::run();
-    close(self_socket);
-    free(aux);
+    QUIT = true;
     exit(EXIT_SUCCESS);
 }
 
@@ -205,7 +219,7 @@ int main(int argc, char *argv[]){
 	signal(SIGTSTP,die_corretly);
     signal(SIGINT,die_corretly);    //Trata o sigint
 
-    while(1){
+    while(true){
         if(IP_EXISTS and !QUIT){ //Se o usuario digitar o ip
             //Criando Socket com a socket()
             if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
@@ -229,7 +243,7 @@ int main(int argc, char *argv[]){
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
             
             while(1){
-                //Rodando ate encontrar o SIGINT(Ctrl + C)
+                //Rodando ate encontrar o SIGINT(Ctrl + D)
                 if(QUIT) break;
             }
         }
