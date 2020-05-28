@@ -199,7 +199,6 @@ void *recebe_mensagem(void *args){
 void refresh_all(void*){
     janela->flush();
     Fl::repeat_timeout(0.05, refresh_all);
-    if(mensagens->count_lines());
 }
 
 //Funcao que instancia a GUI
