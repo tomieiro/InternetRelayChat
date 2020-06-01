@@ -70,6 +70,7 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     escrita->show();
 }
 
+//Funcao handle para o botao de ping
 static void cb_bPing(){
     buffer->append("Voce solicitou o comando ping ao servidor!\n");
     strcpy(aux, "/ping");
@@ -198,13 +199,13 @@ void *recebe_mensagem(void *args){
 //Funcao que atualiza a janela a cada 0.05 segundos
 void refresh_all(void*){
     janela->flush();
-    Fl::repeat_timeout(0.05, refresh_all);
+    Fl::repeat_timeout(REFRESH_TIME, refresh_all);
 }
 
 //Funcao que instancia a GUI
 void *instanciaGui(void *args){
     make_window();
-    Fl::add_timeout(0.05,refresh_all);
+    Fl::add_timeout(REFRESH_TIME,refresh_all);
     Fl::run();
     QUIT = true;
     exit(EXIT_SUCCESS);

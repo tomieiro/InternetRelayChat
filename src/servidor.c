@@ -25,8 +25,7 @@ void die_corretly(int signal){
     exit(EXIT_SUCCESS);
 }
 
-//Função que verifica se o cliente digitou o comando ping
-
+//Função que verifica se o cliente digitou o comando ping e retorna pong
 int ping(NO *atual, char *buffer){
     if(!strcmp(buffer, "/ping")){
         strcpy(buffer,"pong");
@@ -45,7 +44,7 @@ void gerencia_dados(NO *atual){
     while(1){
         aux = clientes->inicio;
         recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
-        if(recebidos <= 0){
+        if(recebidos <= 0){ //Caso mensagem alguma seja recebido, entao
             for(int i=0; i<4; i++){ //Tentando mais 4 vezes receber a mensagem
                 recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
                 if(recebidos > 0) goto erro_de_conexao;
