@@ -16,5 +16,9 @@ extern Fl_Text_Buffer *buffer;
 #include <FL/Fl_Return_Button.H>
 extern Fl_Return_Button *startChat;
 extern Fl_Return_Button *bEnviar;
+extern Fl_Input *nick;
+extern Fl_Return_Button *bNick;
+extern Fl_Input *kick;
+extern Fl_Return_Button *bKick;
 extern "C" { Fl_Double_Window* make_window(); }
 #endif

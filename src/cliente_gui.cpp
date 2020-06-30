@@ -12,6 +12,17 @@ Fl_Input *ipServ=(Fl_Input *)0;
 Fl_Input *username=(Fl_Input *)0;
 Fl_Return_Button *startChat=(Fl_Return_Button *)0;
 Fl_Return_Button *bPing=(Fl_Return_Button *)0;
+Fl_Input *nick=(Fl_Input *)0;
+Fl_Return_Button *bNick=(Fl_Return_Button *)0;
+Fl_Input *kick=(Fl_Input *)0;
+Fl_Return_Button *bKick=(Fl_Return_Button *)0;
+Fl_Input *mute=(Fl_Input *)0;
+Fl_Return_Button *bMute=(Fl_Return_Button *)0;
+Fl_Input *unmute=(Fl_Input *)0;
+Fl_Return_Button *bUnmute=(Fl_Return_Button *)0;
+Fl_Input *whois=(Fl_Input *)0;
+Fl_Return_Button *bWhois =(Fl_Return_Button *)0;
+
 
 //Definindo variaveis globais
 SOCKET self_socket;
@@ -64,6 +75,10 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     username->deactivate();
     username->hide();
     bPing->show();
+    nick->show();
+    bNick->show();
+    kick->show();
+    bKick->show();
     bEnviar->label("ENVIAR");
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
@@ -119,20 +134,91 @@ Fl_Double_Window* make_window() {
       escrita->hide();
     } // Fl_Input* escrita
      // Criando botao de ping
-      bPing = new Fl_Return_Button(10, 515, 535, 25, "PING");
+      bPing = new Fl_Return_Button(10, 515, 140, 25, "PING");
       bPing->labelfont(4);
       bPing->callback((Fl_Callback*)cb_bPing);
       bPing->hide();
     }
     { // Criando botao de enviar
-      bEnviar = new Fl_Return_Button(10, 485, 535, 25, "   START CHAT");
+      bEnviar = new Fl_Return_Button(10, 485, 140, 25, "   START CHAT");
       bEnviar->labelfont(4);
       bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
+    } // Fl_Return_Button* bEnviar
+    { // Cria buffer de escrita
+      nick = new Fl_Input(169, 485, 60, 25);
+      nick->color((Fl_Color)23);
+      nick->labelfont(4);
+      nick->textfont(4);
+      nick->align(Fl_Align(FL_ALIGN_TOP_LEFT));
+      nick->hide();
+    } // Fl_Input* escrita
+    {
+     // Criando botao de nick
+      bNick = new Fl_Return_Button(170, 515, 60, 25, "NICK");
+      bNick->labelfont(4);
+      bNick->callback((Fl_Callback*)cb_bPing);
+      bNick->hide();
+    }
+    { // Cria buffer de escrita
+      kick = new Fl_Input(239, 485, 60, 25);
+      kick->color((Fl_Color)23);
+      kick->labelfont(4);
+      kick->textfont(4);
+      kick->align(Fl_Align(FL_ALIGN_TOP_LEFT));
+      kick->hide();
+    } // Fl_Input* escrita
+    { // Criando botao de enviar
+      bKick = new Fl_Return_Button(240, 515, 60, 25, "KICK");
+      bKick->labelfont(4);
+      bKick->callback((Fl_Callback*)cb_bStartChatStart);
+      bKick->hide();
+    } // Fl_Return_Button* bEnviar
+    { // Cria buffer de mute
+      mute = new Fl_Input(309, 485, 60, 25);
+      mute->color((Fl_Color)23);
+      mute->labelfont(4);
+      mute->textfont(4);
+      mute->align(Fl_Align(FL_ALIGN_TOP_LEFT));
+      mute->hide();
+    } // Fl_Input* escrita
+    { // Criando botao de mute
+      bKick = new Fl_Return_Button(310, 515, 60, 25, "MUTE");
+      bKick->labelfont(4);
+      bKick->callback((Fl_Callback*)cb_bStartChatStart);
+      bKick->hide();
+    } // Fl_Return_Button* bEnviar
+    { // Cria buffer de unmute
+      unmute = new Fl_Input(379, 485, 60, 25);
+      unmute->color((Fl_Color)23);
+      unmute->labelfont(4);
+      unmute->textfont(4);
+      unmute->align(Fl_Align(FL_ALIGN_TOP_LEFT));
+      unmute->hide();
+    } // Fl_Input* escrita
+    { // Criando botao de unmute
+      bKick = new Fl_Return_Button(380, 515, 60, 25, "UNMUTE");
+      bKick->labelfont(4);
+      bKick->callback((Fl_Callback*)cb_bStartChatStart);
+      bKick->hide();
+    } // Fl_Return_Button* bEnviar
+    { // Cria buffer de whois
+      whois = new Fl_Input(449, 485, 60, 25);
+      whois->color((Fl_Color)23);
+      whois->labelfont(4);
+      whois->textfont(4);
+      whois->align(Fl_Align(FL_ALIGN_TOP_LEFT));
+      whois->hide();
+    } // Fl_Input* escrita
+    { // Criando botao de whois
+      bKick = new Fl_Return_Button(450, 515, 60, 25, "WHOIS");
+      bKick->labelfont(4);
+      bKick->callback((Fl_Callback*)cb_bStartChatStart);
+      bKick->hide();
     } // Fl_Return_Button* bEnviar
     {
     janela->end();
     janela->show();
-  } // Fl_Double_Window* janela
+    } // Fl_Double_Window* janela
   return janela;
 }
 
