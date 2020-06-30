@@ -100,6 +100,71 @@ static void cb_bPing(){
     return;
 }
 
+//Funcao handle para o botao de nick
+static void cb_bNick(){
+    buffer->append("Voce trocou o nick de um usuario!\n");
+    char aux_local[256];
+    strcat(aux_local, "/nickname#");
+    strcat(aux_local, nick->value());
+    strcpy(aux, aux_local);
+    mensagens->redraw();
+    ENVIAR = true;
+    nick->value("");
+    return;
+}
+
+//Funcao handle para o botao de kick
+static void cb_bKick(){
+    buffer->append("Voce kickou um usuario!\n");
+    char aux_local[256];
+    strcat(aux_local, "/kick#");
+    strcat(aux_local, kick->value());
+    strcpy(aux, aux_local);
+    mensagens->redraw();
+    ENVIAR = true;
+    kick->value("");
+    return;
+}
+
+//Funcao handle para o botao de mute
+static void cb_bMute(){
+    buffer->append("Voce mutou um usuario!\n");
+    char aux_local[256];
+    strcat(aux_local, "/mute#");
+    strcat(aux_local, mute->value());
+    strcpy(aux, aux_local);
+    mensagens->redraw();
+    ENVIAR = true;
+    mute->value("");
+    return;
+}
+
+//Funcao handle para o botao de unmute
+static void cb_bUnmute(){
+    buffer->append("Voce desmutou um usuario!\n");
+    char aux_local[256];
+    strcat(aux_local, "/unmute#");
+    strcat(aux_local, unmute->value());
+    strcpy(aux, aux_local);
+    mensagens->redraw();
+    ENVIAR = true;
+    unmute->value("");
+    return;
+}
+
+//Funcao handle para o botao de whois
+static void cb_bWhois(){
+    buffer->append("Voce solicitou whois em um usuario!\n");
+    char aux_local[256];
+    strcat(aux_local, "/whois#");
+    strcat(aux_local, whois->value());
+    strcpy(aux, aux_local);
+    mensagens->redraw();
+    ENVIAR = true;
+    whois->value("");
+    return;
+}
+
 /**
  Funcao que cria uma janela
 */
@@ -162,7 +227,7 @@ Fl_Double_Window* make_window() {
      // Criando botao de nick
       bNick = new Fl_Return_Button(170, 515, 60, 25, "NICK");
       bNick->labelfont(4);
-      bNick->callback((Fl_Callback*)cb_bPing);
+      bNick->callback((Fl_Callback*)cb_bNick);
       bNick->hide();
     }
     { // Cria buffer de escrita
@@ -176,7 +241,7 @@ Fl_Double_Window* make_window() {
     { // Criando botao de enviar
       bKick = new Fl_Return_Button(240, 515, 60, 25, "KICK");
       bKick->labelfont(4);
-      bKick->callback((Fl_Callback*)cb_bStartChatStart);
+      bKick->callback((Fl_Callback*)cb_bKick);
       bKick->hide();
     } // Fl_Return_Button* bEnviar
     { // Cria buffer de mute
@@ -190,7 +255,7 @@ Fl_Double_Window* make_window() {
     { // Criando botao de mute
       bMute = new Fl_Return_Button(310, 515, 60, 25, "MUTE");
       bMute->labelfont(4);
-      bMute->callback((Fl_Callback*)cb_bStartChatStart);
+      bMute->callback((Fl_Callback*)cb_bMute);
       bMute->hide();
     } // Fl_Return_Button* bEnviar
     { // Cria buffer de unmute
@@ -204,7 +269,7 @@ Fl_Double_Window* make_window() {
     { // Criando botao de unmute
       bUnmute = new Fl_Return_Button(380, 515, 80, 25, "UNMUTE");
       bUnmute->labelfont(4);
-      bUnmute->callback((Fl_Callback*)cb_bStartChatStart);
+      bUnmute->callback((Fl_Callback*)cb_bUnmute);
       bUnmute->hide();
     } // Fl_Return_Button* bEnviar
     { // Cria buffer de whois
@@ -218,7 +283,7 @@ Fl_Double_Window* make_window() {
     { // Criando botao de whois
       bWhois = new Fl_Return_Button(470, 515, 80, 25, "WHOIS");
       bWhois->labelfont(4);
-      bWhois->callback((Fl_Callback*)cb_bStartChatStart);
+      bWhois->callback((Fl_Callback*)cb_bWhois);
       bWhois->hide();
     } // Fl_Return_Button* bEnviar
     {
