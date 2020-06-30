@@ -11,13 +11,10 @@ void create_subnet(char* ip){
     strcpy(mask,MASK);
     char* subnet[32] = "";
     int sub[4], i = 0;
-    char* aux;
-    do{
-       
+   
+    for(int i = 0; i < 4; i++){    
        sub[i] = (int) strtok(ip, ".") & (int) strtok(mask, ".");
-
-        i++;
-    }while(i < 3);
+    }
 
     for(int i = 0; i < 4; i++){
         strcat(subnet,sub[i]);
