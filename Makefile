@@ -9,13 +9,9 @@ run_servidor:
 	./bin/servidor
 
 run_cliente:
-	g++	-o	bin/cliente	src/cliente.cpp	-lpthread
+	g++	-o	bin/cliente	src/cliente_gui.cpp	-lpthread
 	./bin/cliente
-	
-run_cliente_gui:
-	g++	-o	bin/cliente_gui	src/cliente_gui.cpp	-lpthread -lfltk
-	./bin/cliente_gui
-	
+
 install_libs:
 	sudo	apt	install	libfltk1.3-dev
 
