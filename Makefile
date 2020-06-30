@@ -9,7 +9,7 @@ run_servidor:
 	./bin/servidor
 
 run_cliente:
-	g++	-o	bin/cliente	src/cliente_gui.cpp	-lpthread
+	g++	-o	bin/cliente	src/cliente_gui.cpp	-lpthread -lfltk
 	./bin/cliente
 
 install_libs:

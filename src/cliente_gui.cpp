@@ -10,6 +10,7 @@ Fl_Text_Buffer *buffer = (Fl_Text_Buffer*)0;
 Fl_Return_Button *bEnviar=(Fl_Return_Button *)0;
 Fl_Input *ipServ=(Fl_Input *)0;
 Fl_Input *username=(Fl_Input *)0;
+Fl_Input *canalchat=(Fl_Input *)0;
 Fl_Return_Button *startChat=(Fl_Return_Button *)0;
 Fl_Return_Button *bPing=(Fl_Return_Button *)0;
 Fl_Input *nick=(Fl_Input *)0;
@@ -30,9 +31,11 @@ SOCKET self_socket;
 int QUIT = false;
 int IP_EXISTS = false;
 int ENVIAR = false;
+int CONECTADO = false;
 char *aux; //String auxiliar do buffer
 char ip[20]; //Endereco de IP do servidor
 char user[20];
+char canal[200];
 
 
 using namespace std;
@@ -69,9 +72,16 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     if(!strcmp(ipServ->value(),"") || !strcmp(ipServ->value(),"")) return;
     strcpy(ip, ipServ->value());
     strcpy(user, username->value());
+    char aux_canal[250];
+    strcpy(aux_canal,"");
+    strcat(aux_canal,"#");
+    strcat(aux_canal,canalchat->value());
+    strcpy(canal, aux_canal);
     IP_EXISTS = true;
     ipServ->deactivate();
     ipServ->hide();
+    canalchat->deactivate();
+    canalchat->hide();
     username->deactivate();
     username->hide();
     bPing->show();
@@ -165,6 +175,12 @@ static void cb_bWhois(){
     return;
 }
 
+static void set_canal(){
+  strcpy(aux,canal);
+  ENVIAR = true;
+  return;
+}
+
 /**
  Funcao que cria uma janela
 */
@@ -183,6 +199,12 @@ Fl_Double_Window* make_window() {
       username = new Fl_Input(235, 210, 290, 30, "DIGITE SEU USERNAME:");
       username->labelfont(4);
       username->textfont(4);
+      //username->hide(); //REMOVER ESSA LINHA QUANDO FOR IMPLEMENTAR MULTI USUARIO
+    } // Fl_Input* username
+    { // Cria input do canal
+      canalchat = new Fl_Input(235, 255, 290, 30, "DIGITE O CANAL:");
+      canalchat->labelfont(4);
+      canalchat->textfont(4);
       //username->hide(); //REMOVER ESSA LINHA QUANDO FOR IMPLEMENTAR MULTI USUARIO
     } // Fl_Input* username
     {
@@ -373,7 +395,7 @@ void *instanciaGui(void *args){
 int main(int argc, char *argv[]){
     pthread_t gui;
     pthread_create(&gui,NULL,instanciaGui, NULL); //Abre uma socket para a GUI
-	signal(SIGTSTP,die_corretly);
+	  signal(SIGTSTP,die_corretly);
     signal(SIGINT,die_corretly);    //Trata o sigint
 
     while(true){
@@ -398,8 +420,12 @@ int main(int argc, char *argv[]){
             //Abrindo uma thread para receber mensagens
             pthread_t recebeMsg;
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
-            
-            while(1){
+
+            sleep(1);
+
+            set_canal();
+
+            while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)
                 if(QUIT) break;
             }
