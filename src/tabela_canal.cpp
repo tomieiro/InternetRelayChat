@@ -1,24 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include "tabela_canal.h"
 
 #define MASK "255.255.0.0"
 
+using namespace std;
 
 // Função que disponibiliza as subredes que podem ser utilizadas 
-char** create_subnet(char* ip){
-
-    char* mask;
-    strcpy(mask,MASK);
+char** calculate_subnets(char* ip){
     char init_subnet[20];
     char subnets[256][20];
     strcpy(init_subnet, "");
     int sub[4];
+
+    string aux_ip, aux_mask;
+    aux_ip.append(ip);
+    aux_mask.append(MASK);
+    aux_ip = aux_ip.substr(0, aux_ip.find("."));
+    aux_mask = aux_mask.substr(0, aux_ip.find("."));
    
     for(int i = 0; i < 4; i++){    
-    
-        sub[i] = (int) strtok(ip, ".") & (int) strtok(mask, ".");
+        sprintf(sub[i], "%s", "sss");
         strcat(init_subnet,sub[i]);
 
     }
@@ -50,7 +54,7 @@ CANAL* criar_tabela(int tam){
     return tabela;
 }
 
-int hash(char* nome,int tam){
+int hash_f(char* nome,int tam){
 
     int value;
 
@@ -67,7 +71,7 @@ void inserir_canal(CANAL* tab,int tam,char* ip, char* nome){
 
     do{
         
-        ind = hash(nome,tam) + k;
+        ind = hash_f(nome,tam) + k;
         k++;
     }while(strcmp(tab[ind].ip,NULL) != 0);
 
@@ -78,7 +82,7 @@ void inserir_canal(CANAL* tab,int tam,char* ip, char* nome){
 
 char* verifica_canal(CANAL* tab, char* nome, int tam){
 
-    int ind = hash(nome, tam);
+    int ind = hash_f(nome, tam);
 
     if(tab[ind].ip == NULL) return NULL;
 
@@ -91,7 +95,7 @@ char* busca_canal(CANAL* tab, char* nome, int tam){
 
     if(!ip) {
 
-        inserir_canal(tab, ip,tam, tam); 
+        inserir_canal(tab, tam, ip, nome); 
 
         return;
     }
