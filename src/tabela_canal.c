@@ -5,22 +5,36 @@
 
 #define MASK "255.255.0.0"
 
-void create_subnet(char* ip){
+
+// Função que disponibiliza as subredes que podem ser utilizadas 
+char** create_subnet(char* ip){
 
     char* mask;
     strcpy(mask,MASK);
-    char* subnet[32] = "";
-    int sub[4], i = 0;
+    char init_subnet[20];
+    char subnets[256][20];
+    strcpy(init_subnet, "");
+    int sub[4];
    
     for(int i = 0; i < 4; i++){    
-       sub[i] = (int) strtok(ip, ".") & (int) strtok(mask, ".");
+    
+        sub[i] = (int) strtok(ip, ".") & (int) strtok(mask, ".");
+        strcat(init_subnet,sub[i]);
+
     }
 
-    for(int i = 0; i < 4; i++){
-        strcat(subnet,sub[i]);
+    // 1st subnet - range: x.x.0.0 - x.x.0.255
+    // 256th subnet - range: x.x.255.0 - x.x.255.255
+
+    int atual = (int) init_subnet;
+
+    for(int k = 0; k < 256; k++){
+
+        strcpy(subnets[k], (char*) atual);
+        atual = atual  + 1000;
     }
 
-
+    return subnets;
 
 }
 
