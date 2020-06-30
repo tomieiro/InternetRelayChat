@@ -72,6 +72,7 @@ int main(int argc, char *argv[]){
 	signal(SIGINT,alert);
     signal(SIGTSTP, die_corretly);
 	char ip[20]; //Endereco de IP do servidor
+    char canal[200]; // Nome do Canal do servidor
     printf("Digite o endereço do servidor (Digite 0.0.0.0 para local): ");
     scanf("%s", ip);
     getchar();
