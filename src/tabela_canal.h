@@ -7,7 +7,6 @@ typedef struct canal{
 
 CANAL* criar_tabela(int tam);
 void inserir_canal(CANAL* tab,int ind,char ip[20], char* nome);
-int hash(int value,int tam);
-char* busca_hash(CANAL* tab, char* nome, int tam);
-
-
+int hash(char* nome,int tam);
+char* verifica_canal(CANAL* tab, char* nome, int tam);
+char** create_subnet(char* ip);
