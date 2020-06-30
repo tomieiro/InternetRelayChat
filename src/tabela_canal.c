@@ -15,37 +15,55 @@ CANAL* criar_tabela(int tam){
     return tabela;
 }
 
-int hash(int value,int tam){
+int hash(char* nome,int tam){
+
+    int value;
+
+    for(int i = 0; nome[i] != '\0'; i++){
+        value += (int) nome[i];
+    }
 
     return value%tam;
 }
 
-void inserir_canal(CANAL* tab,int tam,char ip[20], char* nome){
+void inserir_canal(CANAL* tab,int tam,char* ip, char* nome){
 
-    int ind = 0;
+    int ind, k = 0;
 
-    while(strcmp(tab[ind].ip,NULL)){
+    do{
         
-        ind = hash((int)nome,tam);
-     
-    }
+        ind = hash(nome,tam) + k;
+        k++;
+    }while(strcmp(tab[ind].ip,NULL) != 0);
 
     strcpy(tab[ind].ip, ip);
     strcpy(tab[ind].nome, nome); 
 }
 
-char* busca_hash(CANAL* tab, char* nome, int tam){
 
-    int ind = hash((int) nome, tam);
+char* verifica_canal(CANAL* tab, char* nome, int tam){
 
-    if(strcmp(tab[ind].ip, NULL) == 0) {
-        return NULL;
-    }
+    int ind = hash(nome, tam);
+
+    if(tab[ind].ip == NULL) return NULL;
 
     return tab[ind].ip;
-
 }
 
+char* busca_canal(CANAL* tab, char* nome, int tam){
 
+    char* ip = verifica_canal(tab, nome, tam);
+
+    if(!ip) {
+
+        inserir_canal(tab, ip,tam, tam); 
+
+        return;
+    }
+
+
+    return ip;
+
+}
 
 

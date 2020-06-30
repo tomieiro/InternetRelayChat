@@ -79,7 +79,6 @@ int main(int argc, char *argv[]){
 
     //Criando Socket com a socket()
 	if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
-    
     struct sockaddr_in endereco_servidor;
     
     //Definindo parametros do endereco
