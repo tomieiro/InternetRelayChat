@@ -4,6 +4,7 @@
 SOCKET self_socket, socket_clientes_atual;
 //DEFININDO LISTA DE CLIENTES
 LISTA *clientes;
+char canal[200];
 
 //Metodo que lanca um erro e termina o programa
 //args: (const char*) Frase de erro
@@ -41,6 +42,7 @@ void gerencia_dados(NO *atual){
     NO *aux;
     int recebidos;
     char buffer[TAM_MSG_MAX];
+    recv(atual->self_socket, canal, TAM_MSG_MAX, 0); //recebe canal
     while(1){
         aux = clientes->inicio;
         recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
@@ -62,6 +64,7 @@ void gerencia_dados(NO *atual){
             }
 			aux = aux->proximo;
 		}
+        printf("%s\n",canal);
     }
 }
 
