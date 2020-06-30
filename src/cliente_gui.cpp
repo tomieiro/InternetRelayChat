@@ -79,6 +79,12 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     bNick->show();
     kick->show();
     bKick->show();
+    mute->show();
+    bMute->show();
+    unmute->show();
+    bUnmute->show();
+    whois->show();
+    bWhois->show();
     bEnviar->label("ENVIAR");
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
@@ -182,13 +188,13 @@ Fl_Double_Window* make_window() {
       mute->hide();
     } // Fl_Input* escrita
     { // Criando botao de mute
-      bKick = new Fl_Return_Button(310, 515, 60, 25, "MUTE");
-      bKick->labelfont(4);
-      bKick->callback((Fl_Callback*)cb_bStartChatStart);
-      bKick->hide();
+      bMute = new Fl_Return_Button(310, 515, 60, 25, "MUTE");
+      bMute->labelfont(4);
+      bMute->callback((Fl_Callback*)cb_bStartChatStart);
+      bMute->hide();
     } // Fl_Return_Button* bEnviar
     { // Cria buffer de unmute
-      unmute = new Fl_Input(379, 485, 60, 25);
+      unmute = new Fl_Input(379, 485, 80, 25);
       unmute->color((Fl_Color)23);
       unmute->labelfont(4);
       unmute->textfont(4);
@@ -196,24 +202,24 @@ Fl_Double_Window* make_window() {
       unmute->hide();
     } // Fl_Input* escrita
     { // Criando botao de unmute
-      bKick = new Fl_Return_Button(380, 515, 60, 25, "UNMUTE");
-      bKick->labelfont(4);
-      bKick->callback((Fl_Callback*)cb_bStartChatStart);
-      bKick->hide();
+      bUnmute = new Fl_Return_Button(380, 515, 80, 25, "UNMUTE");
+      bUnmute->labelfont(4);
+      bUnmute->callback((Fl_Callback*)cb_bStartChatStart);
+      bUnmute->hide();
     } // Fl_Return_Button* bEnviar
     { // Cria buffer de whois
-      whois = new Fl_Input(449, 485, 60, 25);
+      whois = new Fl_Input(469, 485, 80, 25);
       whois->color((Fl_Color)23);
       whois->labelfont(4);
       whois->textfont(4);
       whois->align(Fl_Align(FL_ALIGN_TOP_LEFT));
       whois->hide();
-    } // Fl_Input* escrita
+    } // Fl_Input* escritas
     { // Criando botao de whois
-      bKick = new Fl_Return_Button(450, 515, 60, 25, "WHOIS");
-      bKick->labelfont(4);
-      bKick->callback((Fl_Callback*)cb_bStartChatStart);
-      bKick->hide();
+      bWhois = new Fl_Return_Button(470, 515, 80, 25, "WHOIS");
+      bWhois->labelfont(4);
+      bWhois->callback((Fl_Callback*)cb_bStartChatStart);
+      bWhois->hide();
     } // Fl_Return_Button* bEnviar
     {
     janela->end();

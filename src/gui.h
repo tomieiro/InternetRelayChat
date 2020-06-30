@@ -20,5 +20,11 @@ extern Fl_Input *nick;
 extern Fl_Return_Button *bNick;
 extern Fl_Input *kick;
 extern Fl_Return_Button *bKick;
+extern Fl_Input *mute;
+extern Fl_Return_Button *bMute;
+extern Fl_Input *unmute;
+extern Fl_Return_Button *bUnmute;
+extern Fl_Input *whois;
+extern Fl_Return_Button *bWhois;
 extern "C" { Fl_Double_Window* make_window(); }
 #endif
