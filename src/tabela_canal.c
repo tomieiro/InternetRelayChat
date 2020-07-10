@@ -64,6 +64,7 @@ int hash(char* nome,int tam){
 
 void inserir_canal(CANAL* tab, int tam, char* ip, char* admin_ip, char* nome){
 
+
     int ind, k = 0;
 
     do{ 
@@ -91,7 +92,7 @@ char* busca_canal(CANAL* tab, char* nome, char* user_ip,int tam){
 
     if(!ip) {
 
-        inserir_canal(tab, tam, ip, user_ip,tam); 
+        inserir_canal(tab, tam, ip, user_ip,nome); 
 
         return;
     }
