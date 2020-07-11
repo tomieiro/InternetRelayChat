@@ -6,6 +6,7 @@ SOCKET self_socket, socket_clientes_atual;
 LISTA *clientes;
 char canal[200];
 char **subnets;
+CANAL *tab;
 
 
 //Metodo que lanca um erro e termina o programa
@@ -32,6 +33,25 @@ void die_corretly(int signal){
 int ping(NO *atual, char *buffer){
     if(!strcmp(buffer, "/ping")){
         strcpy(buffer,"pong");
+        send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        return 0;
+    }
+}
+
+//Função que verifica se o cliente digitou o comando ping e retorna pong
+int join(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/join", 5)){
+        //guarda em algum lugar o nome do canal e o cliente
+        char nomeCanal[50];
+        int i=6, j=0;
+        while(buffer[i] != '\0'){
+            nomeCanal[j++] = buffer[i++];
+        }
+        nomeCanal[j] = '\0';    
+        //verifica se o canal já foi criado ou não
+        char *ip = busca_canal(tab, nomeCanal, MAX_CANAIS);        
+        //enviar o ip do canal
+        strcpy(buffer, ip);
         send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
@@ -65,6 +85,9 @@ void gerencia_dados(NO *atual){
     
         if(!ping(atual, buffer)) aux = NULL;
 
+        //verifica o comando join
+        if(!join(atual, buffer)) aux = NULL;
+
         while(aux != NULL){
             if(aux->self_socket != atual->self_socket){
                 send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
@@ -77,6 +100,10 @@ void gerencia_dados(NO *atual){
 
 //Main
 int main(int argc, char *argv[]){
+
+    //Criando tabela de canais
+    tab = criar_tabela(MAX_CANAIS); 
+
     //Criando lista
     clientes = lista_criar();
 	signal(SIGINT,die_corretly);
@@ -114,3 +141,4 @@ int main(int argc, char *argv[]){
     }
 	return 0;
 }
+

@@ -11,7 +11,7 @@ using namespace std;
 // Função que disponibiliza as subredes que podem ser utilizadas 
 char** calculate_subnets(char* ip){
     
-  char init_subnet[20];
+    char init_subnet[20];
     char subnets[256][20];
     strcpy(init_subnet, "");
     char sub[4];
@@ -87,15 +87,14 @@ char* verifica_canal(CANAL* tab, char* nome, int tam){
 }
 
 
-char* busca_canal(CANAL* tab, char* nome, char* user_ip,int tam){
+char* busca_canal(CANAL* tab, char* nome, char* user_ip, int tam){
 
     char* ip = verifica_canal(tab, nome, tam);
 
     if(!ip) {
 
-        inserir_canal(tab, tam, ip, user_ip,tam); 
+        inserir_canal(tab, tam, ip, user_ip, tam);
 
-        return;
     }
 
     return ip;
