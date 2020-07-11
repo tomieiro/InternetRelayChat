@@ -73,7 +73,6 @@ char** calculate_subnets(char* ip){
 
 }
 
-//
 CANAL* criar_tabela(int tam){
 
     CANAL tabela[tam];
@@ -117,9 +116,9 @@ char* verifica_canal(CANAL* tab, char* nome, int tam){
     int ind = hash_ind(nome, tam);
 
     if(strcmp(tab[ind].ip,NULL) == 0) return NULL;
-
     return tab[ind].ip;
 }
+
 
 char* busca_canal(CANAL* tab, char* nome, char* user_ip,int tam){
 
@@ -131,5 +130,5 @@ char* busca_canal(CANAL* tab, char* nome, char* user_ip,int tam){
     }
 
     return ip;
-}
 
+}

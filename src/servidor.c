@@ -5,6 +5,8 @@ SOCKET self_socket, socket_clientes_atual;
 //DEFININDO LISTA DE CLIENTES
 LISTA *clientes;
 char canal[200];
+char **subnets;
+
 
 //Metodo que lanca um erro e termina o programa
 //args: (const char*) Frase de erro
@@ -33,6 +35,11 @@ int ping(NO *atual, char *buffer){
         send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
+}
+
+void cria_tabelas(){
+    printf("%li\n",htonl(INADDR_ANY));
+    subnets = calculate_subnets(htonl(INADDR_ANY));
 }
 
 //Funcao que gerencia todos os clientes no servidor

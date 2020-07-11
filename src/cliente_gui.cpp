@@ -34,7 +34,7 @@ int ENVIAR = false;
 int CONECTADO = false;
 char *aux; //String auxiliar do buffer
 char ip[20]; //Endereco de IP do servidor
-char user[20];
+char user[50];
 char canal[200];
 
 
