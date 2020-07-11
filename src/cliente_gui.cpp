@@ -74,7 +74,7 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     strcpy(user, username->value());
     char aux_canal[250];
     strcpy(aux_canal,"");
-    strcat(aux_canal,"#");
+    strcat(aux_canal,"/join#");
     strcat(aux_canal,canalchat->value());
     strcpy(canal, aux_canal);
     IP_EXISTS = true;
