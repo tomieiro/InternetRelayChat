@@ -1,27 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include "tabela_canal.h"
 
 #define MASK "255.255.0.0" // Máscara /16 classe B
 
+using namespace std;
 
 // Função que disponibiliza as subredes que podem ser utilizadas 
-char** create_subnet(char* ip){
+char** calculate_subnets(char* ip){
 
-    char* mask;
-    strcpy(mask,MASK);
     char init_subnet[20];
     char subnets[256][20];
     strcpy(init_subnet, "");
-    int sub[4];
-   
-    for(int i = 0; i < 4; i++){    
-    
-        sub[i] =  atoi(strtok(ip, ".")) & atoi(strtok(mask, "."));
-        strcat(init_subnet,atoi(sub[i]));
+    char sub[4];
 
-    }
+    string aux_ip, aux_mask;
+    aux_ip.append(ip);
+    aux_mask.append(MASK);
+    aux_ip = aux_ip.substr(0, aux_ip.find("."));
+    aux_mask = aux_mask.substr(0, aux_ip.find("."));
+   /*
+    for(int i = 0; i < 4; i++){    
+        sprintf(sub[i], "%s", "sss");
+        strcat(init_subnet,sub[i]);
+
+    }*/
 
     // 1st subnet - range: x.x.0.0 - x.x.0.255
     // 256th subnet - range: x.x.255.0 - x.x.255.255
