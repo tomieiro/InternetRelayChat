@@ -18,4 +18,4 @@
 #define MAX_CLIENTES 3
 #define TAM_MAX_BUFFER (TAM_MSG_MAX*100)
 #define SOCKET int
-
+#define MAX_CANAIS 256

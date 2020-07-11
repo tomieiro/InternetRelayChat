@@ -34,7 +34,6 @@ void libera_tabela(char** tab, int l, int c){
 
 // Função que disponibiliza as subredes que podem ser utilizadas 
 char** calculate_subnets(char* ip){
-
     char init_subnet[20];
     char** subnets = alocar_tabela(256,20);
     strcpy(init_subnet, "");
@@ -120,12 +119,11 @@ char* verifica_canal(CANAL* tab, char* nome, int tam){
 }
 
 
-char* busca_canal(CANAL* tab, char* nome, char* user_ip,int tam){
+char* busca_canal(CANAL* tab, char* nome, char* user_ip, int tam){
 
     char* ip = verifica_canal(tab, nome, tam);
 
     if(!ip) {
-
         inserir_canal(tab, tam, ip, user_ip,nome); 
     }
 
