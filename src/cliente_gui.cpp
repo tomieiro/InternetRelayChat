@@ -35,7 +35,8 @@ int CONECTADO = false;
 char *aux; //String auxiliar do buffer
 char ip[20]; //Endereco de IP do servidor
 char user[50];
-char canal[200];
+char *canal;
+int canal_setado = false;
 
 
 using namespace std;
@@ -47,7 +48,7 @@ using namespace std;
 //Funcao handle para receber e colocar as mensagens na tela
 static void cb_receber(char *rec) {
     string concat;
-    concat.append(rec); concat.append("\n"); 
+    concat.append(rec); concat.append("\n");
     if(strcmp(rec,"")) buffer->append(concat.c_str()); //Coloca mensagem na tela
     mensagens->redraw();
     return;
@@ -77,6 +78,7 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     strcat(aux_canal,"/join#");
     strcat(aux_canal,canalchat->value());
     strcpy(canal, aux_canal);
+    canal_setado = true;
     IP_EXISTS = true;
     ipServ->deactivate();
     ipServ->hide();
@@ -173,12 +175,6 @@ static void cb_bWhois(){
     ENVIAR = true;
     whois->value("");
     return;
-}
-
-static void set_canal(){
-  strcpy(aux,canal);
-  ENVIAR = true;
-  return;
 }
 
 /**
@@ -311,6 +307,7 @@ Fl_Double_Window* make_window() {
     {
     janela->end();
     janela->show();
+    canal = (char*)malloc(200*sizeof(char));
     } // Fl_Double_Window* janela
   return janela;
 }
@@ -402,28 +399,31 @@ int main(int argc, char *argv[]){
         if(IP_EXISTS and !QUIT){ //Se o usuario digitar o ip
             //Criando Socket com a socket()
             if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
-            
+
             struct sockaddr_in endereco_servidor;
-            
+
             //Definindo parametros do endereco
             endereco_servidor.sin_family = PF_INET; //Definindo familia do endereco de internet
             endereco_servidor.sin_addr.s_addr = inet_addr(ip);
             endereco_servidor.sin_port = htons(PORTA); //Definindo porta
-            
+
             //Realiza conexao com o servidor
-            if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");	
-            
+            if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");
+
+            while(!canal_setado);
+
+            recv(self_socket, canal, TAM_MSG_MAX, 0);
+            free(canal);
+            janela->label("foi!");
             //Abrindo uma thread para enviar mensagens
             pthread_t enviaMsg;
             if(pthread_create(&enviaMsg, NULL, envia_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
-            
+
             //Abrindo uma thread para receber mensagens
             pthread_t recebeMsg;
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
 
             sleep(1);
-
-            set_canal();
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)

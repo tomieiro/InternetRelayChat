@@ -38,7 +38,7 @@ int ping(NO *atual, char *buffer){
     }
 }
 
-//Função que verifica se o cliente digitou o comando ping e retorna pong
+//Função Join
 int join(NO *atual, char *buffer){
     if(!strncmp(buffer, "/join", 5)){
         //guarda em algum lugar o nome do canal e o cliente
@@ -49,10 +49,10 @@ int join(NO *atual, char *buffer){
         }
         nomeCanal[j] = '\0';    
         //verifica se o canal já foi criado ou não
-        char *ip = busca_canal(tab, nomeCanal, MAX_CANAIS);        
+        //char *ip = busca_canal(tab, nomeCanal, MAX_CANAIS);        
         //enviar o ip do canal
-        strcpy(buffer, ip);
-        send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        //strcpy(buffer, ip);
+        //send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
 }

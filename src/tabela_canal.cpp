@@ -72,13 +72,13 @@ char** calculate_subnets(char* ip){
 
 }
 
-CANAL* criar_tabela(int tam){
+CANAL *criar_tabela(int tam){
 
-    CANAL tabela[tam];
+    CANAL *tabela = (CANAL*)malloc(sizeof(CANAL)*tam);
 
     for(int i = 0; i < tam; i++){
-        strcpy(tabela[i].ip,NULL);
-        strcpy(tabela[i].nome,NULL);
+        strcpy(tabela[i].ip,"");
+        strcpy(tabela[i].nome,"");
     }
 
     return tabela;
@@ -103,23 +103,23 @@ void inserir_canal(CANAL* tab, int tam, char* ip, char* admin_ip, char* nome){
     do{ 
         ind = hash_ind(nome,tam) + k;
         k++;
-    }while(strcmp(tab[ind].ip,NULL) != 0);
+    }while(strcmp(tab[ind].ip,"") != 0);
 
     strcpy(tab[ind].admin_ip, admin_ip);
     strcpy(tab[ind].ip, ip);
     strcpy(tab[ind].nome, nome); 
 }
 
-char* verifica_canal(CANAL* tab, char* nome, int tam){
+char *verifica_canal(CANAL* tab, char* nome, int tam){
 
     int ind = hash_ind(nome, tam);
 
-    if(strcmp(tab[ind].ip,NULL) == 0) return NULL;
+    if(strcmp(tab[ind].ip,"") == 0) return NULL;
     return tab[ind].ip;
 }
 
 
-char* busca_canal(CANAL* tab, char* nome, char* user_ip, int tam){
+char *busca_canal(CANAL* tab, char* nome, char* user_ip, int tam){
 
     char* ip = verifica_canal(tab, nome, tam);
 
