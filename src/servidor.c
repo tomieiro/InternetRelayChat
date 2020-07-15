@@ -85,7 +85,9 @@ int mute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
     if(!strncmp(buffer, "/mute#", 6)){
         char username_atual[50];
         strcpy(username_atual,&buffer[6]);
-        lista_buscar_cliente(canal_atual->clientes, username_atual)->mutado = 1;
+        NO *aux = lista_buscar_cliente(canal_atual->clientes, username_atual);
+        if(aux == NULL) return 0;
+        aux->mutado = 1;
         return 0;
     }
 }
@@ -98,7 +100,9 @@ int unmute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
     if(!strncmp(buffer, "/unmute#", 8)){
         char username_atual[50];
         strcpy(username_atual,&buffer[6]);
-        lista_buscar_cliente(canal_atual->clientes, username_atual)->mutado = 0;
+        NO *aux = lista_buscar_cliente(canal_atual->clientes, username_atual);
+        if(aux == NULL) return 0;
+        aux->mutado = 0;
         return 0;
     }
 }
@@ -153,6 +157,7 @@ void *gerencia_dados(void *c_atual){
             if(!kick(canal_atual, cliente_atual, buffer)) aux = NULL;
             
             if(!mute(canal_atual, cliente_atual, buffer)) aux = NULL;
+            
             if(!unmute(canal_atual, cliente_atual, buffer)) aux = NULL;
 
         }
