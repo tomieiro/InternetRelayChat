@@ -68,6 +68,20 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
     return;
 }
 
+//Funcao que seta um username
+static void seta_username(){
+    strcpy(aux, username->value());
+    ENVIAR = true;
+    return;
+}
+
+//Funcao que seta um canal
+static void seta_canal(){
+    strcpy(aux, canal);
+    ENVIAR = true;
+    return;
+}
+
 //Funcao handle para o botao start
 static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     if(!strcmp(ipServ->value(),"") || !strcmp(ipServ->value(),"")) return;
@@ -101,20 +115,9 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
     escrita->show();
-}
-
-//Funcao que seta um username
-static void seta_username(){
-    strcpy(aux, username->value());
-    ENVIAR = true;
-    return;
-}
-
-//Funcao que seta um canal
-static void seta_canal(){
-    strcpy(aux, canal);
-    ENVIAR = true;
-    return;
+    usleep(2000000);
+    seta_username();
+    seta_canal();
 }
 
 //Funcao handle para o botao de ping
@@ -439,11 +442,6 @@ int main(int argc, char *argv[]){
             //Abrindo uma thread para receber mensagens
             pthread_t recebeMsg;
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
-
-            sleep(1);
-
-            seta_username();
-            seta_canal();
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)
