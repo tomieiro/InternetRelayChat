@@ -35,7 +35,7 @@ int CONECTADO = false;
 char *aux; //String auxiliar do buffer
 char ip[20]; //Endereco de IP do servidor
 char user[50];
-char *canal;
+char canal[200];
 int canal_setado = false;
 
 
@@ -100,6 +100,13 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
     escrita->show();
+}
+
+//Funcao que seta um canal
+static void seta_canal(){
+    strcpy(aux, canal);
+    ENVIAR = true;
+    return;
 }
 
 //Funcao handle para o botao de ping
@@ -306,7 +313,6 @@ Fl_Double_Window* make_window() {
     {
     janela->end();
     janela->show();
-    canal = (char*)malloc(200*sizeof(char));
     } // Fl_Double_Window* janela
   return janela;
 }
@@ -408,8 +414,6 @@ int main(int argc, char *argv[]){
 
             //Realiza conexao com o servidor
             if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");
-            
-            send(self_socket, canal, TAM_MSG_MAX, 0);
 
             //Abrindo uma thread para enviar mensagens
             pthread_t enviaMsg;
@@ -420,6 +424,8 @@ int main(int argc, char *argv[]){
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
 
             sleep(1);
+
+            seta_canal();
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)

@@ -3,7 +3,7 @@
 //DEFININDO SOCKETS DO SERVIDOR E DO CLIENTE ATUAL
 SOCKET self_socket, socket_clientes_atual;
 //DEFININDO LISTA DE CLIENTES
-LISTA *clientes;
+LISTA_CANAL *canais;
 char canal[200];
 
 
@@ -16,13 +16,18 @@ void erro(const char erro[100]){
 
 //Funcao para matar corretamente o programa fechando descritor da socket
 void die_corretly(int signal){
-    NO *aux = clientes->inicio;
-    while(aux != NULL){
-        close(aux->self_socket);
-        aux = aux->proximo;
+    CANAL *aux_canais = canais->inicio;
+    while(aux_canais != NULL){
+        NO *aux = aux_canais->clientes->inicio;
+        while(aux != NULL){
+            close(aux->self_socket);
+            aux = aux->proximo;
+        }
+        close(self_socket);
+        lista_apagar(aux_canais->clientes);
+        aux_canais = aux_canais->proximo;
     }
-    close(self_socket);
-    lista_apagar(clientes);
+    lista_canais_apagar(canais);
     printf("\nFechando servidor...\n");
     exit(EXIT_SUCCESS);
 }
@@ -36,41 +41,73 @@ int ping(NO *atual, char *buffer){
     }
 }
 
-//Função Join
-int join(NO *atual, char *buffer){
-    if(!strncmp(buffer, "/join", 5)){
-        //TODO
+//Função que kicka um cliente do server
+int kick(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/kick", 5)){
+        
+        return 0;
     }
 }
 
+//Função que troca o nick de um cliente
+int nick(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/nick", 5)){
+        
+        return 0;
+    }
+}
+
+//Função que muta um cliente
+int mute(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/mute", 5)){
+        
+        return 0;
+    }
+}
+
+//Função que desmuta um cliente
+int unmute(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/unmute", 7)){
+        
+        return 0;
+    }
+}
+
+//Função que 
+int whois(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/whois", 6)){
+        //Retorna ip do cara que tem esse nome
+        return 0;
+    }
+}
+
+
 //Funcao que gerencia todos os clientes no servidor
 //args:(NO*) No atual da lista do cliente que se conectou no momento
-void gerencia_dados(NO *atual){
+void *gerencia_dados(void *c_atual){
+    CANAL *canal_atual = (CANAL*)c_atual;
+    NO *cliente_atual = canal_atual->clientes->fim;
     signal(SIGINT,die_corretly);
     NO *aux;
     int recebidos;
     char buffer[TAM_MSG_MAX];
-    recv(atual->self_socket, canal, 200, 0); //recebe canal
     while(1){
-        aux = clientes->inicio;
-        recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        aux = canal_atual->clientes->inicio;
+        recebidos = recv(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
         if(recebidos <= 0){ //Caso mensagem alguma seja recebido, entao
             for(int i=0; i<4; i++){ //Tentando mais 4 vezes receber a mensagem
-                recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
+                recebidos = recv(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
                 if(recebidos > 0) goto erro_de_conexao;
             }
             erro_de_conexao:
-            lista_remover_item(clientes, atual->ip);
+            lista_remover_item(canal_atual->clientes, cliente_atual->ip);
             break;
         }
     
-        if(!ping(atual, buffer)) aux = NULL;
-
-        //verifica o comando join
-        if(!join(atual, buffer)) aux = NULL;
+        if(!ping(cliente_atual, buffer)) aux = NULL;
 
         while(aux != NULL){
-            if(aux->self_socket != atual->self_socket){
+            if(aux->self_socket != cliente_atual->self_socket){
                 send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
             }
 			aux = aux->proximo;
@@ -83,9 +120,9 @@ void gerencia_dados(NO *atual){
 int main(int argc, char *argv[]){
 
     //Criando lista
-    clientes = lista_criar();
+    CANAL *canal_atual;
+    canais = lista_canais_criar();
 	signal(SIGINT,die_corretly);
-    
     //Criando Socket com a socket()
 	if((self_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) erro("Criacao do Socket falhou!\n");
     
@@ -112,11 +149,22 @@ int main(int argc, char *argv[]){
         }else{
             printf("QUANTIDADE DE CLIENTES EXCEDIDA!\n");
         }
+        recv(socket_clientes_atual, canal, 200, 0); //recebe canal
+        CANAL *aux_canal_atual;
+        aux_canal_atual = lista_canais_buscar_item(canais,canal);
+        if(aux_canal_atual == NULL){ //Se o canal nao existir, cria-se um novo
+            canal_atual->clientes = lista_criar();
+            strcpy(canal_atual->nome_canal,canal);
+            canal_atual->proximo = NULL;
+            lista_canais_inserir(canais,canal_atual);
+            lista_inserir(canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);
+        }
+        else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
+            lista_inserir(aux_canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);
+        }
         printf("O IP: %s se conectou!\n",inet_ntoa(endereco_cliente.sin_addr));
-        lista_inserir(clientes, inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);
-        
-        pthread_t gerenciaDados;
-        if(pthread_create(&gerenciaDados, NULL, gerencia_dados, clientes->fim) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
+        pthread_t gerenciaDados; // Abre uma thread para o cara recem conectado
+        if(pthread_create(&gerenciaDados, NULL, gerencia_dados, canal_atual) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }
 	return 0;
 }

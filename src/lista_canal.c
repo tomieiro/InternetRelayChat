@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lista_canal.h"
-#include "lista_clientes.h"
 
-
-LISTA_CANAL *criar_lista_canais(void){
+LISTA_CANAL *lista_canais_criar(void){
 	LISTA_CANAL *novo = (LISTA_CANAL *)malloc(sizeof(LISTA_CANAL));
 	if(novo != NULL){		
 		novo->inicio = NULL;
@@ -14,7 +13,7 @@ LISTA_CANAL *criar_lista_canais(void){
 	return novo;
 }
 
-int lista_canal_inserir(LISTA_CANAL *L, CANAL *C){
+int lista_canais_inserir(LISTA_CANAL *L, CANAL *C){
 	CANAL *aux = NULL;
 	if(L == NULL) return (ERRO);
 	aux = (CANAL *) malloc(sizeof(CANAL));
@@ -23,7 +22,7 @@ int lista_canal_inserir(LISTA_CANAL *L, CANAL *C){
 		strcpy(aux->nome_canal,C->nome_canal);
 		aux->proximo = NULL;
 		/*CASO DE PRIMEIRO ELEMENTO*/
-		if(lista_vazia(L)){
+		if(lista_canais_vazia(L)){
 			L->inicio = aux;
 			L->fim = aux;
 			L->tam++;
@@ -37,8 +36,8 @@ int lista_canal_inserir(LISTA_CANAL *L, CANAL *C){
 	return 0; /*FALHA*/
 }
 
-void apagar_lista_canais(LISTA_CANAL *L){
-	if(L != NULL && !lista_vazia(L)){
+void lista_canais_apagar(LISTA_CANAL *L){
+	if(L != NULL && !lista_canais_vazia(L)){
    		CANAL *no = L->inicio, *aux;
     	while(no != L->fim){
        	 	aux = no;
@@ -69,7 +68,7 @@ CANAL *lista_canais_buscar_item(LISTA_CANAL *L, char chave[200]){
 /*
 int lista_canais_remover_item(LISTA_CANAL *L, CANAL chave){
 	CANAL *p = NULL, *aux = NULL;
-	if(L != NULL && !lista_vazia(L)){
+	if(L != NULL && !lista_canais_vazia(L)){
 		p = L->inicio;
 		while((p != NULL) && (p->item != chave)){
 			aux = p; // aux_busca recebe o nó anterior de aux_remocao
