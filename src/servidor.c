@@ -145,6 +145,11 @@ void *gerencia_dados(void *c_atual){
             break;
         }
      
+        char aux_msg[4096];
+        strcpy(aux_msg,cliente_atual->usuario);
+        strcat(aux_msg," : ");
+        strncat(aux_msg,buffer,4096-strlen(aux_msg));
+
         if(!ping(cliente_atual, buffer)) aux = NULL;
 
         if(!nickname(cliente_atual, buffer)) aux = NULL;
@@ -210,7 +215,7 @@ int main(int argc, char *argv[]){
         printf("USR: %s\n",username);
         sleep(1);
         recv(socket_clientes_atual, canal, 200, 0); //recebe canal
-        printf("CANAL: %s\n",username);
+        printf("CANAL: %s\n",canal);
         CANAL *aux_canal_atual;
         aux_canal_atual = lista_canais_buscar_item(canais, canal);
         if(aux_canal_atual == NULL){ //Se o canal nao existir, cria-se um novo

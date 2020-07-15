@@ -59,25 +59,9 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
     string concat;
     concat.append("\tYOU: "); concat.append(escrita->value()); concat.append("\n"); //Coloca sua msg na tela
     buffer->append(concat.c_str());
-    strcpy(aux, user);
-    strcat(aux, " : ");
     strcat(aux,escrita->value());
     escrita->value("");
     mensagens->redraw();
-    ENVIAR = true;
-    return;
-}
-
-//Funcao que seta um username
-static void seta_username(){
-    strcpy(aux, username->value());
-    ENVIAR = true;
-    return;
-}
-
-//Funcao que seta um canal
-static void seta_canal(){
-    strcpy(aux, canal);
     ENVIAR = true;
     return;
 }
