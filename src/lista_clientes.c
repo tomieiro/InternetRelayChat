@@ -6,13 +6,13 @@
 //Funcao que cria uma lista
 //return (LISTA*) lista criada
 LISTA *lista_criar(){
-	LISTA *newl = (LISTA *)malloc(sizeof(LISTA));
-	if(newl != NULL){		
-		newl->inicio = NULL;
-		newl->fim = NULL;
-		newl->tam = 0;
+	LISTA *new = (LISTA *)malloc(sizeof(LISTA));
+	if(new != NULL){		
+		new->inicio = NULL;
+		new->fim = NULL;
+		new->tam = 0;
 	}
-	return newl;
+	return new;
 }
 //Funcao que apaga uma lista
 //args: (LISTA*) lista qual se deseja alterar

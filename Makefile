@@ -5,7 +5,7 @@ run_servidor:
 	@printf "IP Externo: "
 	@wget -qO- http://ipecho.net/plain
 	@printf "\n"
-	@gcc	-o	bin/servidor	src/lista_clientes.c	src/servidor.c	-lpthread
+	@gcc	-o	bin/servidor	src/lista_canal.c	src/lista_clientes.c	src/servidor.c	-lpthread
 	./bin/servidor
 
 run_cliente:

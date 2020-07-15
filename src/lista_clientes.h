@@ -2,25 +2,36 @@
 #define LISTA_H
 
 #define ERRO -404
-#define TIPO int  //Customização do tipo de dados
+#define TIPO int
+#define SOCKET int
 
 typedef struct LISTA_ LISTA;
 typedef struct NO_ NO;
 
+struct LISTA_{
+	NO *inicio;
+	NO *fim;
+	int tam;
+};
+
+struct NO_{
+	NO *proximo;
+    char usuario[16];
+    char ip[20];
+    SOCKET self_socket;
+};
+
 /*Funções básicas:*/
-LISTA *lista_criar(void);
+LISTA *lista_criar();
 void lista_apagar(LISTA *L);
 
 /*Funções de inserção, busca e remoção:*/
-TIPO lista_buscar_item(LISTA *L, TIPO chave);
-//TIPO lista_buscar_recursivo(LISTA *L, TIPO chave);
-int lista_inserir_inicio(LISTA *L, TIPO item);
-int lista_inserir_fim(LISTA *L, TIPO item); /*INSERE NA ÚLTIMA POSIÇÃO*/
-int lista_remover_item(LISTA *L, TIPO chave);
+SOCKET lista_buscar_item(LISTA *L, char *ip);
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket);
+int lista_remover_item(LISTA *L, char *ip);
 
 /*Outras funções:*/
-//void lista_imprimir(LISTA *L);
 int lista_vazia(LISTA *L);
-int lista_tamanho(LISTA *L);
+void printLista(LISTA *l);
 
 #endif
