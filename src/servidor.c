@@ -157,7 +157,7 @@ void *gerencia_dados(void *c_atual){
             if(!kick(canal_atual, cliente_atual, buffer)) aux = NULL;
             
             if(!mute(canal_atual, cliente_atual, buffer)) aux = NULL;
-            
+
             if(!unmute(canal_atual, cliente_atual, buffer)) aux = NULL;
 
         }
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]){
         }else{
             printf("QUANTIDADE DE CLIENTES EXCEDIDA!\n");
         }
-        //recv(socket_clientes_atual, username, 50, 0); //recebe username
+        recv(socket_clientes_atual, username, 50, 0); //recebe username
         recv(socket_clientes_atual, canal, 200, 0); //recebe canal
         CANAL *aux_canal_atual;
         aux_canal_atual = lista_canais_buscar_item(canais, canal);

@@ -105,7 +105,7 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
 
 //Funcao que seta um username
 static void seta_username(){
-    strcpy(aux, user);
+    strcpy(aux, username->value());
     ENVIAR = true;
     return;
 }
@@ -442,7 +442,7 @@ int main(int argc, char *argv[]){
 
             sleep(1);
 
-            //seta_username();
+            seta_username();
             seta_canal();
 
             while(true){
