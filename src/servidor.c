@@ -207,6 +207,7 @@ int main(int argc, char *argv[]){
             printf("QUANTIDADE DE CLIENTES EXCEDIDA!\n");
         }
         recv(socket_clientes_atual, username, 50, 0); //recebe username
+        sleep(1);
         recv(socket_clientes_atual, canal, 200, 0); //recebe canal
         CANAL *aux_canal_atual;
         aux_canal_atual = lista_canais_buscar_item(canais, canal);
