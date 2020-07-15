@@ -250,11 +250,6 @@ Fl_Double_Window* make_window() {
       bPing->callback((Fl_Callback*)cb_bPing);
       bPing->hide();
     }
-    { // Criando botao de enviar
-      bEnviar = new Fl_Return_Button(10, 485, 140, 25, "   START CHAT");
-      bEnviar->labelfont(4);
-      bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
-    } // Fl_Return_Button* bEnviar
     { // Cria buffer de escrita
       nick = new Fl_Input(169, 485, 60, 25);
       nick->color((Fl_Color)23);
@@ -325,6 +320,11 @@ Fl_Double_Window* make_window() {
       bWhois->labelfont(4);
       bWhois->callback((Fl_Callback*)cb_bWhois);
       bWhois->hide();
+    } // Fl_Return_Button* bEnviar
+    { // Criando botao de enviar
+      bEnviar = new Fl_Return_Button(10, 485, 140, 25, "   START CHAT");
+      bEnviar->labelfont(4);
+      bEnviar->callback((Fl_Callback*)cb_bStartChatStart);
     } // Fl_Return_Button* bEnviar
     {
     janela->end();
