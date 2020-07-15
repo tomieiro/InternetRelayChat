@@ -39,6 +39,7 @@ int ping(NO *atual, char *buffer){
         send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
+    return 1;
 }
 
 //Função que kicka um cliente do server
@@ -58,6 +59,7 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
         return 0;
     
     }
+    return 1;
 }
 
 //Função que troca o nick de um cliente
@@ -72,9 +74,8 @@ int nickname(NO *cliente_atual, char *buffer){
         strcat(buffer, " mudou seu nickname para ");
         strcat(buffer, cliente_atual->usuario);
         strcat(buffer, ".");
-        send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
-        return 1;
     }
+    return 1;
 }
 
 //Função que muta um cliente
@@ -90,6 +91,7 @@ int mute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
         aux->mutado = 1;
         return 0;
     }
+    return 1;
 }
 
 //Função que desmuta um cliente
@@ -105,6 +107,7 @@ int unmute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
         aux->mutado = 0;
         return 0;
     }
+    return 1;
 }
 
 //Função que informa ao administrador de um canal qual o IP de um usuário qualquer do mesmo canal
@@ -120,6 +123,7 @@ int whois(CANAL *canal_atual, NO *cliente_atual, char *buffer){
         send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
+    return 1;
 }
 
 
