@@ -65,11 +65,15 @@ int nickname(NO *cliente_atual, char *buffer){
     if(!strncmp(buffer, "/nickname#", 10)){
         char novo_username[50];
         strcpy(novo_username, &buffer[10]);
+        strcpy(buffer, "O cliente ");
+        strcat(buffer, cliente_atual->usuario);
         strcpy(cliente_atual->usuario, novo_username);
-        //Envia 
+        //Envia pro usuário a mensagem que o nome foi alterado;
+        strcat(buffer, " mudou seu nickname para ");
+        strcat(buffer, cliente_atual->usuario);
+        strcat(buffer, ".");
         send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
-        return 0;
-        return 0;
+        return 1;
     }
 }
 
@@ -144,7 +148,7 @@ void *gerencia_dados(void *c_atual){
 
             if(!kick(canal_atual, cliente_atual, buffer)) aux = NULL;
             
-            
+
 
         }
         
