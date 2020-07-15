@@ -78,6 +78,7 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     strcat(aux_canal,"/join#");
     strcat(aux_canal,canalchat->value());
     strcpy(canal, aux_canal);
+    janela->label(canalchat->value());
     IP_EXISTS = true;
     ipServ->deactivate();
     ipServ->hide();
