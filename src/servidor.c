@@ -43,6 +43,9 @@ int ping(NO *atual, char *buffer){
 
 //Função que kicka um cliente do server
 int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
+
+    //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
+
     if(!strncmp(buffer, "/kick#", 6)){
         if(canal_atual->clientes->inicio->ip == cliente_atual->ip){ //Se o cara for o admin
             char username_atual[50];
@@ -59,8 +62,8 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 }
 
 //Função que troca o nick de um cliente
-int nick(NO *atual, char *buffer){
-    if(!strncmp(buffer, "/nick#", 6)){
+int nickname(NO *atual, char *buffer){
+    if(!strncmp(buffer, "/nickname#", 6)){
         
         return 0;
     }
@@ -68,6 +71,9 @@ int nick(NO *atual, char *buffer){
 
 //Função que muta um cliente
 int mute(NO *atual, char *buffer){
+
+    //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
+
     if(!strncmp(buffer, "/mute#", 6)){
         
         return 0;
@@ -76,14 +82,20 @@ int mute(NO *atual, char *buffer){
 
 //Função que desmuta um cliente
 int unmute(NO *atual, char *buffer){
+
+    //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
+
     if(!strncmp(buffer, "/unmute#", 8)){
         
         return 0;
     }
 }
 
-//Função que 
+//Função que informa ao administrador de um canal qual o IP de um usuário qualquer do mesmo canal
 int whois(CANAL *canal_atual, NO *cliente_atual, char *buffer){
+    
+    //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
+    
     if(!strncmp(buffer, "/whois#", 7)){
         if(canal_atual->clientes->inicio->ip == cliente_atual->ip){ //Se o cara for o admin
             char username_atual[50];
