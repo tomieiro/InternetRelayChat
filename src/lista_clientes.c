@@ -74,10 +74,21 @@ char *lista_buscar_ip(LISTA *L, char username[50]){
 	return "Usuario Inexistente";
 }	
 
+NO *lista_buscar_cliente(LISTA *L, char *username){
+	NO *aux = L->inicio;
+	if(L != NULL){
+		while(aux != NULL){
+			if(!strcmp(aux->usuario,username)) return aux;
+			aux = aux->proximo;
+		}
+	}
+	return NULL;
+}
+
 //Funcao que insere um item em uma lista
 //args: (LISTA*) lista qual se deseja alterar, (char*)string do ip, (SOCKET)FD do socket a inserir
 //return:(int) 1 se sucesso, 0 se fracasso
-int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50]){
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50], int mutado){
 	NO *aux = NULL;
 	if(L == NULL) return (ERRO);
 	aux = (NO *) malloc(sizeof(NO));
@@ -85,6 +96,7 @@ int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50]){
         strcpy(aux->ip,ip);
 		strcpy(aux->usuario,username);
         aux->self_socket = self_socket;
+		aux->mutado = mutado;
 		aux->proximo = NULL;
 		/*CASO DE PRIMEIRO ELEMENTO*/
 		if(lista_vazia(L)){

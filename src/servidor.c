@@ -78,23 +78,27 @@ int nickname(NO *cliente_atual, char *buffer){
 }
 
 //Função que muta um cliente
-int mute(NO *atual, char *buffer){
+int mute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
     if(!strncmp(buffer, "/mute#", 6)){
-        
+        char username_atual[50];
+        strcpy(username_atual,&buffer[6]);
+        lista_buscar_cliente(canal_atual->clientes, username_atual)->mutado = 1;
         return 0;
     }
 }
 
 //Função que desmuta um cliente
-int unmute(NO *atual, char *buffer){
+int unmute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
     if(!strncmp(buffer, "/unmute#", 8)){
-        
+        char username_atual[50];
+        strcpy(username_atual,&buffer[6]);
+        lista_buscar_cliente(canal_atual->clientes, username_atual)->mutado = 0;
         return 0;
     }
 }
@@ -136,7 +140,7 @@ void *gerencia_dados(void *c_atual){
             lista_remover_item(canal_atual->clientes, cliente_atual->ip);
             break;
         }
-    
+     
         if(!ping(cliente_atual, buffer)) aux = NULL;
 
         if(!nickname(cliente_atual, buffer)) aux = NULL;
@@ -148,7 +152,8 @@ void *gerencia_dados(void *c_atual){
 
             if(!kick(canal_atual, cliente_atual, buffer)) aux = NULL;
             
-
+            if(!mute(canal_atual, cliente_atual, buffer)) aux = NULL;
+            if(!unmute(canal_atual, cliente_atual, buffer)) aux = NULL;
 
         }
         
@@ -205,10 +210,10 @@ int main(int argc, char *argv[]){
             strcpy(canal_atual->nome_canal, canal);
             canal_atual->proximo = NULL;
             lista_canais_inserir(canais, canal_atual);
-            lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username);
+            lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }
         else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
-            lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username);
+            lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }
         printf("O IP: %s se conectou!\n", inet_ntoa(endereco_cliente.sin_addr));
         pthread_t gerenciaDados; // Abre uma thread para o cara recem conectado

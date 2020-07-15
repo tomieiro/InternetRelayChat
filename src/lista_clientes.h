@@ -19,6 +19,7 @@ struct NO_{
     char usuario[50];
     char ip[20];
     SOCKET self_socket;
+	int mutado;
 };
 
 /*Funções básicas:*/
@@ -29,8 +30,9 @@ void lista_apagar(LISTA *L);
 SOCKET lista_buscar_item(LISTA *L, char *ip);
 SOCKET lista_buscar_item_por_user(LISTA *L, char *username);
 char *lista_buscar_ip(LISTA *L, char *username);
+NO *lista_buscar_cliente(LISTA *L, char *username);
 
-int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50]);
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50], int mutado);
 int lista_remover_item(LISTA *L, char *ip);
 int lista_remover_item_por_user(LISTA *L, char *username);
 
