@@ -115,9 +115,6 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     bEnviar->callback((Fl_Callback*)cb_bEnviar);
     mensagens->show();
     escrita->show();
-    usleep(2000000);
-    seta_username();
-    seta_canal();
 }
 
 //Funcao handle para o botao de ping
@@ -442,6 +439,9 @@ int main(int argc, char *argv[]){
             //Abrindo uma thread para receber mensagens
             pthread_t recebeMsg;
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
+
+            send(self_socket, user, 50, 0);
+            send(self_socket, canal, 200, 0);
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)
