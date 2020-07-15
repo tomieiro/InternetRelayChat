@@ -148,7 +148,8 @@ void *gerencia_dados(void *c_atual){
         char aux_msg[4096];
         strcpy(aux_msg,cliente_atual->usuario);
         strcat(aux_msg," : ");
-        strncat(aux_msg,buffer,4096-strlen(aux_msg));
+        strcat(aux_msg,buffer);
+        strcpy(buffer,aux_msg);
 
         if(!ping(cliente_atual, buffer)) aux = NULL;
 
