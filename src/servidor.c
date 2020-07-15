@@ -133,6 +133,7 @@ void *gerencia_dados(void *c_atual){
     int recebidos;
     char buffer[TAM_MSG_MAX];
     while(1){
+        strcpy(buffer, "");
         aux = canal_atual->clientes->inicio;
         recebidos = recv(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
         if(recebidos <= 0){ //Caso mensagem alguma seja recebido, entao
