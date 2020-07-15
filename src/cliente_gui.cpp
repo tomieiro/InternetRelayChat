@@ -78,7 +78,6 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     strcat(aux_canal,"/join#");
     strcat(aux_canal,canalchat->value());
     strcpy(canal, aux_canal);
-    canal_setado = true;
     IP_EXISTS = true;
     ipServ->deactivate();
     ipServ->hide();
@@ -409,12 +408,9 @@ int main(int argc, char *argv[]){
 
             //Realiza conexao com o servidor
             if(connect(self_socket, (struct sockaddr *)&(endereco_servidor), sizeof(endereco_servidor)) < 0) erro("Criacao de conexao falhou!\n");
+            
+            send(self_socket, canal, TAM_MSG_MAX, 0);
 
-            while(!canal_setado);
-
-            recv(self_socket, canal, TAM_MSG_MAX, 0);
-            free(canal);
-            janela->label("foi!");
             //Abrindo uma thread para enviar mensagens
             pthread_t enviaMsg;
             if(pthread_create(&enviaMsg, NULL, envia_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
@@ -432,6 +428,7 @@ int main(int argc, char *argv[]){
         }
     }
 	close(self_socket);
-    free(aux);
+  free(canal);
+  free(aux);
 	return 0;
 }

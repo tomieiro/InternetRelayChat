@@ -9,7 +9,6 @@
 #include <signal.h>
 #include <pthread.h>
 #include "lista_clientes.h"
-#include "tabela_canal.h"
 
 //DEFININDO CONSTANTES
 

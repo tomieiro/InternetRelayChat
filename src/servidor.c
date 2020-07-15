@@ -5,8 +5,6 @@ SOCKET self_socket, socket_clientes_atual;
 //DEFININDO LISTA DE CLIENTES
 LISTA *clientes;
 char canal[200];
-char **subnets;
-CANAL *tab;
 
 
 //Metodo que lanca um erro e termina o programa
@@ -41,25 +39,8 @@ int ping(NO *atual, char *buffer){
 //Função Join
 int join(NO *atual, char *buffer){
     if(!strncmp(buffer, "/join", 5)){
-        //guarda em algum lugar o nome do canal e o cliente
-        char nomeCanal[50];
-        int i=6, j=0;
-        while(buffer[i] != '\0'){
-            nomeCanal[j++] = buffer[i++];
-        }
-        nomeCanal[j] = '\0';    
-        //verifica se o canal já foi criado ou não
-        //char *ip = busca_canal(tab, nomeCanal, MAX_CANAIS);        
-        //enviar o ip do canal
-        //strcpy(buffer, ip);
-        //send(atual->self_socket, buffer, TAM_MSG_MAX, 0);
-        return 0;
+        //TODO
     }
-}
-
-void cria_tabelas(){
-    printf("%li\n",htonl(INADDR_ANY));
-    subnets = calculate_subnets(htonl(INADDR_ANY));
 }
 
 //Funcao que gerencia todos os clientes no servidor
@@ -69,7 +50,7 @@ void gerencia_dados(NO *atual){
     NO *aux;
     int recebidos;
     char buffer[TAM_MSG_MAX];
-    recv(atual->self_socket, canal, TAM_MSG_MAX, 0); //recebe canal
+    recv(atual->self_socket, canal, 200, 0); //recebe canal
     while(1){
         aux = clientes->inicio;
         recebidos = recv(atual->self_socket, buffer, TAM_MSG_MAX, 0);
@@ -94,15 +75,12 @@ void gerencia_dados(NO *atual){
             }
 			aux = aux->proximo;
 		}
-        printf("%s\n",canal);
+        printf("CANAL: %s\n",canal);
     }
 }
 
 //Main
 int main(int argc, char *argv[]){
-
-    //Criando tabela de canais
-    tab = criar_tabela(MAX_CANAIS); 
 
     //Criando lista
     clientes = lista_criar();
@@ -136,8 +114,9 @@ int main(int argc, char *argv[]){
         }
         printf("O IP: %s se conectou!\n",inet_ntoa(endereco_cliente.sin_addr));
         lista_inserir(clientes, inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual);
+        
         pthread_t gerenciaDados;
-        if(pthread_create(&gerenciaDados, NULL, (void*)gerencia_dados, clientes->fim) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
+        if(pthread_create(&gerenciaDados, NULL, gerencia_dados, clientes->fim) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }
 	return 0;
 }
