@@ -101,3 +101,8 @@ int lista_canais_vazia(LISTA_CANAL *L){
 int lista_canais_tamanho(LISTA_CANAL *L){
 	return (L != NULL ? L->tam : ERRO);	
 }
+
+int verificar_admin(CANAL *canal, NO *usuario){
+	//Retorna 1 se for igual ao IP do admin do canal ou 0 caso contrário
+	return (strcmp(canal->clientes->inicio->ip, usuario->ip) == 0);
+}

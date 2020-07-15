@@ -16,7 +16,7 @@ struct LISTA_{
 
 struct NO_{
 	NO *proximo;
-    char usuario[16];
+    char usuario[50];
     char ip[20];
     SOCKET self_socket;
 };

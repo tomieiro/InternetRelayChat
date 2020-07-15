@@ -35,5 +35,6 @@ int lista_canais_inserir(LISTA_CANAL *L, CANAL *C); /*INSERE NA ÚLTIMA POSIÇÃ
 //void lista_imprimir(LISTA *L);
 int lista_canais_vazia(LISTA_CANAL *L);
 int lista_canais_tamanho(LISTA_CANAL *L);
+int verificar_admin(CANAL *canal, NO *usuario);
 
 #endif

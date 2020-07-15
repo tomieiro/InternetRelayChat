@@ -47,24 +47,28 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
     if(!strncmp(buffer, "/kick#", 6)){
-        if(canal_atual->clientes->inicio->ip == cliente_atual->ip){ //Se o cara for o admin
-            char username_atual[50];
-            strcpy(username_atual,&buffer[6]);
-            strcpy(buffer,"Voce foi kickado do server!");
-            int socket_busca = lista_buscar_item_por_user(canal_atual->clientes,username_atual);
-            if(socket_busca == -404) return 0;
-            send(socket_busca, buffer, TAM_MSG_MAX, 0);
-            lista_remover_item_por_user(canal_atual->clientes,username_atual);
-            close(lista_buscar_item_por_user(canal_atual->clientes,username_atual));
-            return 0;
-        }
+        char username_atual[50];
+        strcpy(username_atual,&buffer[6]);
+        strcpy(buffer,"Voce foi kickado do server!");
+        int socket_busca = lista_buscar_item_por_user(canal_atual->clientes,username_atual);
+        if(socket_busca == -404) return 0;
+        send(socket_busca, buffer, TAM_MSG_MAX, 0);
+        lista_remover_item_por_user(canal_atual->clientes,username_atual);
+        close(lista_buscar_item_por_user(canal_atual->clientes,username_atual));
+        return 0;
+    
     }
 }
 
 //Função que troca o nick de um cliente
-int nickname(NO *atual, char *buffer){
-    if(!strncmp(buffer, "/nickname#", 6)){
-        
+int nickname(NO *cliente_atual, char *buffer){
+    if(!strncmp(buffer, "/nickname#", 10)){
+        char novo_username[50];
+        strcpy(novo_username, &buffer[10]);
+        strcpy(cliente_atual->usuario, novo_username);
+        //Envia 
+        send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
+        return 0;
         return 0;
     }
 }
@@ -97,13 +101,11 @@ int whois(CANAL *canal_atual, NO *cliente_atual, char *buffer){
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
     
     if(!strncmp(buffer, "/whois#", 7)){
-        if(canal_atual->clientes->inicio->ip == cliente_atual->ip){ //Se o cara for o admin
-            char username_atual[50];
-            strcpy(username_atual,&buffer[7]);
-            strcpy(buffer,lista_buscar_ip(canal_atual->clientes,username_atual));
-            send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
-        }
+        char username_atual[50];
+        strcpy(username_atual,&buffer[7]);
+        strcpy(buffer,lista_buscar_ip(canal_atual->clientes,username_atual));
         //Envia ip do cara que tem esse nome
+        send(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
         return 0;
     }
 }
@@ -132,8 +134,20 @@ void *gerencia_dados(void *c_atual){
         }
     
         if(!ping(cliente_atual, buffer)) aux = NULL;
-        //if(!kick(canal_atual,buffer)) aux = NULL;
-        if(!whois(canal_atual,cliente_atual,buffer)) aux = NULL;
+
+        if(!nickname(cliente_atual, buffer)) aux = NULL;
+        
+        if(verificar_admin(canal_atual, cliente_atual)){
+            //APENAS COMANDOS PERMITIDOS AO ADMIN DO CANAL
+            
+            if(!whois(canal_atual, cliente_atual, buffer)) aux = NULL;
+
+            if(!kick(canal_atual, cliente_atual, buffer)) aux = NULL;
+            
+            
+
+        }
+        
 
         while(aux != NULL){
             if(aux->self_socket != cliente_atual->self_socket){
@@ -181,18 +195,18 @@ int main(int argc, char *argv[]){
         //recv(socket_clientes_atual, username, 50, 0); //recebe username
         recv(socket_clientes_atual, canal, 200, 0); //recebe canal
         CANAL *aux_canal_atual;
-        aux_canal_atual = lista_canais_buscar_item(canais,canal);
+        aux_canal_atual = lista_canais_buscar_item(canais, canal);
         if(aux_canal_atual == NULL){ //Se o canal nao existir, cria-se um novo
             canal_atual->clientes = lista_criar();
-            strcpy(canal_atual->nome_canal,canal);
+            strcpy(canal_atual->nome_canal, canal);
             canal_atual->proximo = NULL;
-            lista_canais_inserir(canais,canal_atual);
-            lista_inserir(canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual,username);
+            lista_canais_inserir(canais, canal_atual);
+            lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username);
         }
         else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
-            lista_inserir(aux_canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr),socket_clientes_atual,username);
+            lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username);
         }
-        printf("O IP: %s se conectou!\n",inet_ntoa(endereco_cliente.sin_addr));
+        printf("O IP: %s se conectou!\n", inet_ntoa(endereco_cliente.sin_addr));
         pthread_t gerenciaDados; // Abre uma thread para o cara recem conectado
         if(pthread_create(&gerenciaDados, NULL, gerencia_dados, canal_atual) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }
