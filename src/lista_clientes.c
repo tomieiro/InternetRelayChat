@@ -5,7 +5,7 @@
 
 //Funcao que cria uma lista
 //return (LISTA*) lista criada
-LISTA *lista_criar(){
+ *lista_criar(){
 	LISTA *new = (LISTA *)malloc(sizeof(LISTA));
 	if(new != NULL){		
 		new->inicio = NULL;
