@@ -144,12 +144,6 @@ void *gerencia_dados(void *c_atual){
             lista_remover_item(canal_atual->clientes, cliente_atual->ip);
             break;
         }
-     
-        char aux_msg[4096];
-        strcpy(aux_msg,cliente_atual->usuario);
-        strcat(aux_msg," : ");
-        strcat(aux_msg,buffer);
-        strcpy(buffer,aux_msg);
 
         if(!ping(cliente_atual, buffer)) aux = NULL;
 
@@ -168,7 +162,14 @@ void *gerencia_dados(void *c_atual){
 
         }
         
-
+        if(aux != NULL){
+            char aux_msg[4096];
+            strcpy(aux_msg,cliente_atual->usuario);
+            strcat(aux_msg," : ");
+            strcat(aux_msg,buffer);
+            strcpy(buffer,aux_msg);
+        }
+        
         while(aux != NULL){
             if(aux->self_socket != cliente_atual->self_socket){
                 //send(aux->self_socket,aux->usuario,50,0);
