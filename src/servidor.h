@@ -10,12 +10,10 @@
 #include <pthread.h>
 #include "lista_clientes.h"
 #include "lista_canal.h"
+#include "macros.h"
 
 //DEFININDO CONSTANTES
 
-#define PORTA 31010
-#define TAM_MSG_MAX 4096
 #define MAX_CLIENTES 3
-#define TAM_MAX_BUFFER (TAM_MSG_MAX*100)
 #define SOCKET int
 #define MAX_CANAIS 256

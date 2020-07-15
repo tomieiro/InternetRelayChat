@@ -102,6 +102,13 @@ static void cb_bStartChatStart(Fl_Return_Button*, void*) {
     escrita->show();
 }
 
+//Funcao que seta um username
+static void seta_username(){
+    strcpy(aux, user);
+    ENVIAR = true;
+    return;
+}
+
 //Funcao que seta um canal
 static void seta_canal(){
     strcpy(aux, canal);
@@ -122,6 +129,7 @@ static void cb_bPing(){
 static void cb_bNick(){
     buffer->append("Voce trocou o nick de um usuario!\n");
     char aux_local[256];
+    strcpy(aux_local,"");
     strcat(aux_local, "/nickname#");
     strcat(aux_local, nick->value());
     strcpy(aux, aux_local);
@@ -135,6 +143,7 @@ static void cb_bNick(){
 static void cb_bKick(){
     buffer->append("Voce kickou um usuario!\n");
     char aux_local[256];
+    strcpy(aux_local,"");
     strcat(aux_local, "/kick#");
     strcat(aux_local, kick->value());
     strcpy(aux, aux_local);
@@ -148,6 +157,7 @@ static void cb_bKick(){
 static void cb_bMute(){
     buffer->append("Voce mutou um usuario!\n");
     char aux_local[256];
+    strcpy(aux_local,"");
     strcat(aux_local, "/mute#");
     strcat(aux_local, mute->value());
     strcpy(aux, aux_local);
@@ -161,6 +171,7 @@ static void cb_bMute(){
 static void cb_bUnmute(){
     buffer->append("Voce desmutou um usuario!\n");
     char aux_local[256];
+    strcpy(aux_local,"");
     strcat(aux_local, "/unmute#");
     strcat(aux_local, unmute->value());
     strcpy(aux, aux_local);
@@ -172,11 +183,16 @@ static void cb_bUnmute(){
 
 //Funcao handle para o botao de whois
 static void cb_bWhois(){
-    buffer->append("Voce solicitou whois em um usuario!\n");
     char aux_local[256];
+    strcpy(aux_local,"");
     strcat(aux_local, "/whois#");
+    if(!strcmp(whois->value(),"")){
+      buffer->append("Campo WhoIs vazio!\n");
+      return;
+    }
     strcat(aux_local, whois->value());
     strcpy(aux, aux_local);
+    buffer->append("Voce solicitou whois em um usuario!\n");
     mensagens->redraw();
     ENVIAR = true;
     whois->value("");
@@ -425,6 +441,7 @@ int main(int argc, char *argv[]){
 
             sleep(1);
 
+            //seta_username();
             seta_canal();
 
             while(true){

@@ -8,11 +8,9 @@
 #include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
+#include "macros.h"
 
 typedef int SOCKET;
 
 //DEFININDO CONSTANTES DO PROGRAMA
-#define PORTA 31010
-#define TAM_MSG_MAX 4096
-#define TAM_MAX_BUFFER (TAM_MSG_MAX*100)
 #define REFRESH_TIME 0.05

@@ -39,22 +39,51 @@ SOCKET lista_buscar_item(LISTA *L, char ip[20]){
 	NO *aux = L->inicio;
 	if(L != NULL){
 		while(aux != NULL){
-			if(strcmp(aux->ip,ip)) return aux->self_socket;
+			if(!strcmp(aux->ip,ip)) return aux->self_socket;
+			aux = aux->proximo;
+		}
+	}
+	return (ERRO);
+}
+
+//Funcao que busca um item em uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*) string do username
+//return:(SOCKET) socket relacionado aquele username
+SOCKET lista_buscar_item_por_user(LISTA *L, char username[50]){
+	NO *aux = L->inicio;
+	if(L != NULL){
+		while(aux != NULL){
+			if(!strcmp(aux->usuario,username)) return aux->self_socket;
 			aux = aux->proximo;
 		}
 	}
 	return (ERRO);
 }	
 
+//Funcao que busca um item em uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*) string do username
+//return:(char*) IP relacionado aquele username
+char *lista_buscar_ip(LISTA *L, char username[50]){
+	NO *aux = L->inicio;
+	if(L != NULL){
+		while(aux != NULL){
+			if(!strcmp(aux->usuario,username)) return aux->ip;
+			aux = aux->proximo;
+		}
+	}
+	return "Usuario Inexistente";
+}	
+
 //Funcao que insere um item em uma lista
 //args: (LISTA*) lista qual se deseja alterar, (char*)string do ip, (SOCKET)FD do socket a inserir
 //return:(int) 1 se sucesso, 0 se fracasso
-int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket){
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50]){
 	NO *aux = NULL;
 	if(L == NULL) return (ERRO);
 	aux = (NO *) malloc(sizeof(NO));
 	if(aux != NULL){
         strcpy(aux->ip,ip);
+		strcpy(aux->usuario,username);
         aux->self_socket = self_socket;
 		aux->proximo = NULL;
 		/*CASO DE PRIMEIRO ELEMENTO*/
@@ -80,6 +109,36 @@ int lista_remover_item(LISTA *L, char ip[20]){
 	if(L != NULL && !lista_vazia(L)){
 		p = L->inicio;
 		while((p != NULL) && (!strcmp(p->ip,ip))){
+			aux = p; /* aux_busca recebe o nó anterior de aux_remocao*/
+			p = p->proximo;
+		}
+		if(p != NULL){
+			if(p == L->inicio){ /*Exceção: chave no inicio*/
+				L->inicio = p->proximo;
+				p->proximo = NULL;
+			}else{
+				aux->proximo = p->proximo;
+				p->proximo = NULL;
+			}
+			if(p == L->fim){ /* Se a chave está no último nó*/
+				L->fim = aux;
+			}
+			L->tam--;
+			free(p);	
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//Funcao que remove um item de uma lista
+//args: (LISTA*) lista qual se deseja alterar, (char*)username qual se deseja remover o FD
+//return: (int) 1 se o item foi removido com sucesso, 0 se houve erro
+int lista_remover_item_por_user(LISTA *L, char username[50]){
+	NO *p = NULL, *aux = NULL;
+	if(L != NULL && !lista_vazia(L)){
+		p = L->inicio;
+		while((p != NULL) && (!strcmp(p->usuario,username))){
 			aux = p; /* aux_busca recebe o nó anterior de aux_remocao*/
 			p = p->proximo;
 		}

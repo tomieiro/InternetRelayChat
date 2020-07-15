@@ -27,8 +27,12 @@ void lista_apagar(LISTA *L);
 
 /*Funções de inserção, busca e remoção:*/
 SOCKET lista_buscar_item(LISTA *L, char *ip);
-int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket);
+SOCKET lista_buscar_item_por_user(LISTA *L, char *username);
+char *lista_buscar_ip(LISTA *L, char *username);
+
+int lista_inserir(LISTA *L, char ip[20], SOCKET self_socket, char username[50]);
 int lista_remover_item(LISTA *L, char *ip);
+int lista_remover_item_por_user(LISTA *L, char *username);
 
 /*Outras funções:*/
 int lista_vazia(LISTA *L);
