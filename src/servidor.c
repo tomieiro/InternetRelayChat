@@ -65,6 +65,7 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 //Função que troca o nick de um cliente
 int nickname(NO *cliente_atual, char *buffer){
     if(!strncmp(buffer, "/nickname#", 10)){
+        if(&buffer[10] == " ") return 0;
         char novo_username[50];
         strcpy(novo_username, &buffer[10]);
         strcpy(buffer, "O cliente ");
@@ -167,24 +168,26 @@ void *gerencia_dados(void *c_atual){
 
         }
         
-        if(aux != NULL){
-            strcpy(aux_msg,cliente_atual->usuario);
-            strcat(aux_msg," : ");
-            strcat(aux_msg,buffer);
-            strcpy(buffer,aux_msg);
-        }
-        
-        while(aux != NULL){
-            if(aux->self_socket != cliente_atual->self_socket){
-                //send(aux->self_socket,aux->usuario,50,0);
-                send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
+        if(!aux->mutado){
+            
+            if(aux != NULL){
+                strcpy(aux_msg,cliente_atual->usuario);
+                strcat(aux_msg," : ");
+                strcat(aux_msg,buffer);
+                strcpy(buffer,aux_msg);
             }
-			aux = aux->proximo;
-		}
-        
-        for(int i=0; i<TAM_MSG_MAX; i++){ //Cleaning Buffer
-            buffer[i] = 0;
-            aux_msg[i] = 0;
+            
+            while(aux != NULL){
+                if(aux->self_socket != cliente_atual->self_socket){
+                    send(aux->self_socket, buffer, TAM_MSG_MAX, 0);
+                }
+                aux = aux->proximo;
+            }
+            
+            for(int i=0; i<TAM_MSG_MAX; i++){ //Cleaning Buffer
+                buffer[i] = 0;
+                aux_msg[i] = 0;
+            }
         }
     }
 }
@@ -229,7 +232,7 @@ int main(int argc, char *argv[]){
         aux_canal_atual = lista_canais_buscar_item(canais, canal);
         if(aux_canal_atual == NULL){ //Se o canal nao existir, cria-se um novo
             canal_atual->clientes = lista_criar();
-            strcpy(canal_atual->nome_canal, canal);
+            strcpy(canal_atual->nome_canal, &canal[5]);
             canal_atual->proximo = NULL;
             lista_canais_inserir(canais, canal_atual);
             lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);

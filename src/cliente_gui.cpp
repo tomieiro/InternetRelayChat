@@ -113,7 +113,6 @@ static void cb_bPing(){
 
 //Funcao handle para o botao de nick
 static void cb_bNick(){
-    buffer->append("Voce trocou o nick de um usuario!\n");
     char aux_local[256];
     strcpy(aux_local,"");
     strcat(aux_local, "/nickname#");
@@ -127,7 +126,6 @@ static void cb_bNick(){
 
 //Funcao handle para o botao de kick
 static void cb_bKick(){
-    buffer->append("Voce kickou um usuario!\n");
     char aux_local[256];
     strcpy(aux_local,"");
     strcat(aux_local, "/kick#");
@@ -141,7 +139,6 @@ static void cb_bKick(){
 
 //Funcao handle para o botao de mute
 static void cb_bMute(){
-    buffer->append("Voce mutou um usuario!\n");
     char aux_local[256];
     strcpy(aux_local,"");
     strcat(aux_local, "/mute#");
@@ -155,7 +152,6 @@ static void cb_bMute(){
 
 //Funcao handle para o botao de unmute
 static void cb_bUnmute(){
-    buffer->append("Voce desmutou um usuario!\n");
     char aux_local[256];
     strcpy(aux_local,"");
     strcat(aux_local, "/unmute#");
@@ -173,12 +169,11 @@ static void cb_bWhois(){
     strcpy(aux_local,"");
     strcat(aux_local, "/whois#");
     if(!strcmp(whois->value(),"")){
-      buffer->append("Campo WhoIs vazio!\n");
+      buffer->append("Campo Whois vazio!\n");
       return;
     }
     strcat(aux_local, whois->value());
     strcpy(aux, aux_local);
-    buffer->append("Voce solicitou whois em um usuario!\n");
     mensagens->redraw();
     ENVIAR = true;
     whois->value("");
