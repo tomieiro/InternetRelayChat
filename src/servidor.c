@@ -136,14 +136,14 @@ void *gerencia_dados(void *c_atual){
     NO *aux;
     int recebidos;
     char buffer[TAM_MSG_MAX];
+    char aux_msg[TAM_MSG_MAX];
     while(1){
-        strcpy(buffer, "");
         aux = canal_atual->clientes->inicio;
         recebidos = recv(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
         if(recebidos <= 0){ //Caso mensagem alguma seja recebido, entao
             for(int i=0; i<4; i++){ //Tentando mais 4 vezes receber a mensagem
                 recebidos = recv(cliente_atual->self_socket, buffer, TAM_MSG_MAX, 0);
-                if(recebidos > 0) goto erro_de_conexao;
+                if(recebidos > 0) break;
             }
             erro_de_conexao:
             lista_remover_item(canal_atual->clientes, cliente_atual->ip);
@@ -168,7 +168,6 @@ void *gerencia_dados(void *c_atual){
         }
         
         if(aux != NULL){
-            char aux_msg[4096];
             strcpy(aux_msg,cliente_atual->usuario);
             strcat(aux_msg," : ");
             strcat(aux_msg,buffer);
@@ -182,6 +181,11 @@ void *gerencia_dados(void *c_atual){
             }
 			aux = aux->proximo;
 		}
+        
+        for(int i=0; i<TAM_MSG_MAX; i++){ //Cleaning Buffer
+            buffer[i] = 0;
+            aux_msg[i] = 0;
+        }
     }
 }
 
@@ -219,10 +223,8 @@ int main(int argc, char *argv[]){
             printf("QUANTIDADE DE CLIENTES EXCEDIDA!\n");
         }
         recv(socket_clientes_atual, username, 50, 0); //recebe username
-        printf("USR: %s\n",username);
-        sleep(1);
+        usleep(300000);
         recv(socket_clientes_atual, canal, 200, 0); //recebe canal
-        printf("CANAL: %s\n",canal);
         CANAL *aux_canal_atual;
         aux_canal_atual = lista_canais_buscar_item(canais, canal);
         if(aux_canal_atual == NULL){ //Se o canal nao existir, cria-se um novo
@@ -233,9 +235,10 @@ int main(int argc, char *argv[]){
             lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }
         else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
+            //if(lista_buscar_item(canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr)) != -404) continue; //Uncomment to turn on resign
             lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }
-        printf("O IP: %s se conectou!\n", inet_ntoa(endereco_cliente.sin_addr));
+        printf("O usuario %s se conectou pelo ip %s no canal %s\n", username, inet_ntoa(endereco_cliente.sin_addr),canal_atual->nome_canal);
         pthread_t gerenciaDados; // Abre uma thread para o cara recem conectado
         if(pthread_create(&gerenciaDados, NULL, gerencia_dados, canal_atual) != 0) erro("Erro ao criar thread de gerenciamento de clientes!");
     }

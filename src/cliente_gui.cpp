@@ -1,6 +1,7 @@
 #include <string>
 #include "cliente.h"
 #include "gui.h"
+#include <iostream>
 
 //Instanciando elementos da GUI
 Fl_Double_Window *janela=(Fl_Double_Window *)0;
@@ -59,11 +60,11 @@ static void cb_bEnviar(Fl_Return_Button*, void*) {
     string concat;
     concat.append("\tYOU: "); concat.append(escrita->value()); concat.append("\n"); //Coloca sua msg na tela
     buffer->append(concat.c_str());
-    strcat(aux,escrita->value());
+    strcpy(aux,escrita->value());
     escrita->value("");
     mensagens->redraw();
     ENVIAR = true;
-    return;
+    return; 
 }
 
 //Funcao handle para o botao start
