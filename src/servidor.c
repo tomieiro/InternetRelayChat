@@ -63,8 +63,8 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 }
 
 //Função que troca o nick de um cliente
-int nickname(NO *cliente_atual, char *buffer){
-    if(!strncmp(buffer, "/nickname#", 10)){
+int nickname(CANAL *canal_atual, NO *cliente_atual, char *buffer){
+    if((!strncmp(buffer, "/nickname#", 10)) && (!strcmp(user_exists(canal_atual->clientes,&buffer[10]),"0"))){
         if(&buffer[10] == " ") return 0;
         char novo_username[50];
         strcpy(novo_username, &buffer[10]);
@@ -155,7 +155,7 @@ void *gerencia_dados(void *c_atual){
 
         if(!ping(cliente_atual, buffer)) aux = NULL;
 
-        if(!nickname(cliente_atual, buffer)) aux = NULL;
+        if(!nickname(canal_atual, cliente_atual, buffer)) aux = NULL;
         
         if(verificar_admin(canal_atual, cliente_atual)){
             //APENAS COMANDOS PERMITIDOS AO ADMIN DO CANAL

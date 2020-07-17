@@ -35,15 +35,15 @@ void lista_apagar(LISTA *L){
 //Funcao que busca um item em uma lista
 //args: (LISTA*) lista qual se deseja alterar, (char*) string do nome
 //return: 1 se true e 0 se false
-int user_exists(LISTA *L, char username[50]){
+const char *user_exists(LISTA *L, char username[50]){
 	NO *aux = L->inicio;
 	if(L != NULL){
 		while(aux != NULL){
-			if(!strcmp(aux->usuario,username)) return 1;
+			if(!strcmp(aux->usuario,username)) return "1";
 			aux = aux->proximo;
 		}
 	}
-	return 0;
+	return "0";
 }
 
 
