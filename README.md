@@ -22,3 +22,7 @@ Adições em relacao à segunda entrega:
   - Foram adicionados os canais de conversa no chat.
 
   - Foram adicionados os comandos ping, kick, nickname, mute, unmute, whois e seu botões na GUI;
+
+Nota: No projeto foi adotada a seguinte politica: uma pessoa pode entrar num mesmo canal com o nome de uma pessoa existente la, porem quando la dentro, nao pode
+      alterar seu nome para o mesmo que o de outra pessoa da sala. Para evitar que pessoas com o mesmo nome entrem num mesmo canal, basta voltar a linha comentada
+      no arquivos: (239 e 242 do servidor.c) e (427 e 428 no cliente_gui.cpp).

@@ -236,10 +236,10 @@ int main(int argc, char *argv[]){
             canal_atual->proximo = NULL;
             lista_canais_inserir(canais, canal_atual);
             lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
-            send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 1 , 0);
+            //send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 2 , 0); Habilite para evitar dois usuarios com mesmo nome
         }
         else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
-            send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 1, 0);
+            //send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 2, 0); Habilite para evitar dois usuarios com mesmo nome
             if(lista_buscar_item(canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr)) != -404) continue; //Uncomment to turn on resign
             lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }

@@ -424,8 +424,8 @@ int main(int argc, char *argv[]){
 
             send(self_socket, user, 50, 0);
             send(self_socket, canal, 200, 0);
-            recv(self_socket, sair, 1, 0);
-            if(!strcmp(sair,"1")) QUIT = true;
+            //recv(self_socket, sair, 2, 0);  Habilite para evitar dois usuarios com mesmo nome
+            //if(!strcmp(sair,"1")) QUIT = true; Habilite para evitar dois usuarios com mesmo nome
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)
