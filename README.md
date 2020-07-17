@@ -11,9 +11,14 @@ Projeto de chat usando sockets para disciplina de Redes
   **Para compilar e executar o cliente : make run_cliente**
   
   -> Basta entrar com o endereço de ip 0.0.0.0(para local); caso deseje rodar na mesma LAN em um computador diferente, use o ip do computador na LAN, 192.168.1.35, por exemplo. Se deseja rodar de outra rede, use o IP retornado em **(I)**
+  
+  -> Vale ressaltar que os comandos "ping", "kick", "nickname", "mute", "unmute" e "whois" sao chamados pela GUI igualmente a sua versao cli.
+     
+     Por exemplo, quando clicamos no botao %mute% e preenchemos o campo acima dele com "fulano", a GUI envia "/mute#fulano" para o servidor, respeitando as regras
+     da especificacao. Alem disso, o comando /join é respeitado e enviado ao server como "/join#nome_canal" assim que o botao de iniciar eh clicado.
 
-Adições em relacao à primeira entrega:
-  - Foram adicionados os comandos "ping" e seu botão na GUI;
-  - Foi tratado o caso de não recepção da mensagem, e mais 4 tentativas de reconexao.
-  - Foi corrigido a atualização do buffer em tempo fixo(0.05 segundos), e não mais em resposta ao usuário.
-Demais itens já haviam sido tratados durante a entrega 1, por questão de agilizar o processo.
+Adições em relacao à segunda entrega:
+
+  - Foram adicionados os canais de conversa no chat.
+
+  - Foram adicionados os comandos ping, kick, nickname, mute, unmute, whois e seu botões na GUI;
