@@ -420,8 +420,12 @@ int main(int argc, char *argv[]){
             pthread_t recebeMsg;
             if(pthread_create(&recebeMsg, NULL, recebe_mensagem, NULL) != 0) erro("Erro ao criar thread de envio!");
 
+            char sair[2];
+
             send(self_socket, user, 50, 0);
             send(self_socket, canal, 200, 0);
+            recv(self_socket, sair, 1, 0);
+            if(!strcmp(sair,"1")) QUIT = true;
 
             while(true){
                 //Rodando ate encontrar o SIGINT(Ctrl + D)

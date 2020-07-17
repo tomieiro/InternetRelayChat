@@ -47,7 +47,7 @@ int kick(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
-    if(!strncmp(buffer, "/kick#", 6)){
+    if((!strncmp(buffer, "/kick#", 6)) && (strcmp(canal_atual->clientes->inicio->ip, cliente_atual->ip))){
         char username_atual[50];
         strcpy(username_atual,&buffer[6]);
         strcpy(buffer,"Voce foi kickado do server!");
@@ -84,7 +84,7 @@ int mute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
-    if(!strncmp(buffer, "/mute#", 6)){
+    if((!strncmp(buffer, "/mute#", 6)) && (strcmp(canal_atual->clientes->inicio->ip, cliente_atual->ip))){
         char username_atual[50];
         strcpy(username_atual,&buffer[6]);
         NO *aux = lista_buscar_cliente(canal_atual->clientes, username_atual);
@@ -100,7 +100,7 @@ int unmute(CANAL *canal_atual, NO *cliente_atual, char *buffer){
 
     //ATENÇÃO: SÓ O ADMIN PODE USAR ESSE COMANDO
 
-    if(!strncmp(buffer, "/unmute#", 8)){
+    if((!strncmp(buffer, "/unmute#", 8)) && (strcmp(canal_atual->clientes->inicio->ip, cliente_atual->ip))){
         char username_atual[50];
         strcpy(username_atual,&buffer[8]);
         NO *aux = lista_buscar_cliente(canal_atual->clientes, username_atual);
@@ -236,8 +236,10 @@ int main(int argc, char *argv[]){
             canal_atual->proximo = NULL;
             lista_canais_inserir(canais, canal_atual);
             lista_inserir(canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
+            send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 1 , 0);
         }
         else{ //Se ja existir, acrescenta o usuario atual a sua lista de usuarios
+            send(socket_clientes_atual, user_exists(canal_atual->clientes,username), 1, 0);
             if(lista_buscar_item(canal_atual->clientes,inet_ntoa(endereco_cliente.sin_addr)) != -404) continue; //Uncomment to turn on resign
             lista_inserir(aux_canal_atual->clientes, inet_ntoa(endereco_cliente.sin_addr), socket_clientes_atual,username, 0);
         }
