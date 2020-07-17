@@ -74,7 +74,7 @@ char *lista_buscar_ip(LISTA *L, char username[50]){
 	return "Usuario Inexistente";
 }	
 
-NO *lista_buscar_cliente(LISTA *L, char *username){
+NO *lista_buscar_cliente(LISTA *L, char username[50]){
 	NO *aux = L->inicio;
 	if(L != NULL){
 		while(aux != NULL){
