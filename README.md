@@ -1,5 +1,5 @@
 # InternetRelayChat
-Projeto de chat usando sockets para disciplina de Redes
+Projeto de chat usando sockets utlizando C/C++
 
 **INSTRUÇÕES DE COMPILAÇÃO:**
 
@@ -16,12 +16,6 @@ Projeto de chat usando sockets para disciplina de Redes
      
      Por exemplo, quando clicamos no botao %mute% e preenchemos o campo acima dele com "fulano", a GUI envia "/mute#fulano" para o servidor, respeitando as regras
      da especificacao. Alem disso, o comando /join é respeitado e enviado ao server como "/join#nome_canal" assim que o botao de iniciar eh clicado.
-
-Adições em relacao à segunda entrega:
-
-  - Foram adicionados os canais de conversa no chat.
-
-  - Foram adicionados os comandos ping, kick, nickname, mute, unmute, whois e seu botões na GUI;
 
 Nota: No projeto foi adotada a seguinte politica: uma pessoa pode entrar num mesmo canal com o nome de uma pessoa existente la, porem quando la dentro, nao pode
       alterar seu nome para o mesmo que o de outra pessoa da sala. Para evitar que pessoas com o mesmo nome entrem num mesmo canal, basta voltar a linha comentada
